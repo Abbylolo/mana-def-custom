@@ -1,30 +1,34 @@
 <template>
-  <div id="home">
+  <div class="app">
     <div class="option">
-      <h1>hhhhh</h1>
-      <router-link to="/login">登录</router-link> |
-      <router-link to="/register">注册</router-link>
+    <!--  <router-link to="/Login">登录</router-link>
+      <router-link to="/register">注册</router-link> -->
     </div>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import Login from './views/Login.vue'
+// import Login from './views/Login.vue'
 
 export default {
-  name: 'home',
-  components:{
-    Login
-  },
+  name: 'app',
+  // components:{
+  //   Login
+  // },
   methods: {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
     }
-  }    
+  }
 }
 </script>
 
 <style>
-#home {
-}
+  /* .option{
+    position: relative;
+    top:23px;
+    left: 595px;
+  } */
+
 </style>

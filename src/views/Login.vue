@@ -6,6 +6,9 @@
         <img src="../assets/pics/comp-logo.png" alt="logo图片加载失败" />
       </div>
       <div class="header-line"></div>
+      <label class="head-title" :style="isLogForm">登录</label>
+      <label class="head-title" :style="isVericodeForm">登录</label>
+      <label class="head-title" :style="isRegisterForm">注册</label>
     </div>
     <!-- 页中 -->
     <div class="main">
@@ -18,10 +21,14 @@
       </div>
       <div class="login-register-wrapper">
         <div class="login-register-tab">
-          <div class="login-text">登录</div>
-          <div class="register-text">注册</div>
-          <div class="path-login-bar"></div>
-          <div class="path-register-bar"></div>
+          <div class="login-text" :class="{'color-active':isLogin}" @click="loginSelect()">
+            登录
+          </div>
+          <div class="register-text" :class="{'color-active':isRegister}" @click="registerSelect()">
+            注册
+          </div>
+          <div :class="{'path-login-bar':isLogin}"></div>
+          <div :class="{'path-register-bar':isRegister}"></div>
         </div>
         <div class="qrcode">
           <img src="../assets/pics/qrcode.png" alt="二维码图片加载失败" />
@@ -29,19 +36,19 @@
         <div class="path-bar"></div>
         <br/>
         <!-- 密码登录表单 -->
-        <div class="log-form" >
+        <div class="log-form" :style="isLogForm" >
           <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
           <input type="password" class="pass-form-item" placeholder="请输入登录密码" />
           <!-- </div><div></div> -->
           <div class="select-line">
             <input type="checkbox" id="auto-log-check" />
             <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="veri-code-login">验证码登录</label>
+            <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
           </div>
           <button class="login-button">登录</button>
         </div>
         <!-- 验证码登录表单 -->
-        <div class="verification-code-form" style="display: none;">
+        <div class="verification-code-form" :style="isVericodeForm">
           <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
           <div class="verification-code-line">
             <input class="verification-code-form-item" placeholder="请输入验证码"/>
@@ -50,12 +57,14 @@
           <div class="select-line">
             <input type="checkbox" id="auto-log-check" />
             <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="password-login">密码登录</label>
+            <label class="password-login" @click="loginSelect()">密码登录</label>
           </div>
           <button class="login-button">登录</button>
         </div>
+        <!-- 二维码登录 -->
+        <!-- <div class="qrcode-form"></div> -->
         <!-- 注册表单 -->
-        <div class="register-form" style="display: none;">
+        <div class="register-form" :style="isRegisterForm">
           <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
           <div class="verification-code-line">
             <input class="verification-code-form-item" placeholder="请输入验证码"/>
@@ -66,7 +75,7 @@
           <div class="select-line">
             <input type="checkbox" id="auto-log-check" />
             <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="veri-code-login">验证码登录</label>
+            <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
           </div>
           <button class="register-button">注册</button>
         </div>
@@ -81,9 +90,40 @@
 
 <script>
   // import LoginForm from "../components/entrance/LogForm.vue"
-
   export default {
     name: 'Login',
+    data() {
+      return {
+        isLogin: true,
+        isRegister: false,
+        isLogForm: "",
+        isRegisterForm: "display: none;",
+        isVericodeForm: "display: none;"
+      }
+    },
+    methods: {
+      loginSelect:function() {
+        this.isLogin = true
+        this.isRegister = false
+        this.isLogForm = ""
+        this.isRegisterForm = "display: none;"
+        this.isVericodeForm = "display: none;"
+      },
+      registerSelect:function() {
+        this.isRegister = true
+        this.isLogin = false
+        this.isLogForm = "display: none;"
+        this.isRegisterForm = ""
+        this.isVericodeForm = "display: none;"
+      },
+      vericodeSelect:function() {
+        this.isLogin = true
+        this.isRegister = false
+        this.isLogForm = "display:none"
+        this.isRegisterForm = "display: none;"
+        this.isVericodeForm = ""
+      }
+    }
   }
 </script>
 
@@ -110,10 +150,14 @@
   }
 
   .header {
-    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
     height:77px;
     background-color: #FFFFFF;
     margin-top: 0px;
+    margin-left: 10vw;
   }
 
   .main {
@@ -124,15 +168,11 @@
     margin-bottom: 0px;
     width: 100vw;
     height: 1002px;
-   /* min-height: 100%;
-    margin-bottom: auto; */
   }
 
   .header-logo {
     width: 196px;
     height: 52px;
-    position: absolute;
-    left: 360px;
   }
 
   .header-line {
@@ -140,9 +180,15 @@
     height: 28px;
     border: 1px solid #DDDDDD;
     opacity: 1;
-    position: absolute;
-    left: 575.5px;
-    top: 10px;
+  }
+
+  .head-title {
+    font-size: 22px;
+    font-family: Source Han Sans SC;
+    font-weight: 500;
+    line-height: 0px;
+    color: #353535;
+    opacity: 1;
   }
 
   #header a {
@@ -219,7 +265,7 @@
   }
 
   /* 表单元素大框 */
-  .log-form, .verification-code-form, .register-form {
+  .log-form, .verification-code-form, .register-form .qrcode-form {
     margin-top: 100px;
     display: flex;
     flex-direction: column;
@@ -235,7 +281,7 @@
     font-family: Source Han Sans SC;
     font-weight: 500;
     line-height: 0px;
-    color: #EC5E2C;
+    color: #999999;
     opacity: 1;
     position: relative;
     top: 44px;
@@ -254,6 +300,10 @@
     position: absolute;
     top: 44px;
     left: 338px;
+  }
+
+  .color-active {
+    color: #EC5E2C;
   }
 
   .qrcode {
@@ -292,7 +342,6 @@
     position: absolute;
     top: 84px;
     left: 302px;
-    display: none;
   }
 
   /* 登录表单样式 */
@@ -400,6 +449,11 @@
     line-height: 0px;
     color: #FFFFFF;
     opacity: 1;
+  }
+
+  /* 二维码登录样式 */
+  .qrcode-form {
+    /* background-image: url(../assets/pics/real_qrcode.jpg); */
   }
 
   /* 注册表单样式 */

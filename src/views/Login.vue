@@ -8,6 +8,7 @@
       <div class="header-line"></div>
       <label class="head-title" :style="isLogForm">登录</label>
       <label class="head-title" :style="isVericodeForm">登录</label>
+      <label class="head-title" :style="isQRCodeForm">登录</label>
       <label class="head-title" :style="isRegisterForm">注册</label>
     </div>
     <!-- 页中 -->
@@ -30,55 +31,62 @@
           <div :class="{'path-login-bar':isLogin}"></div>
           <div :class="{'path-register-bar':isRegister}"></div>
         </div>
-        <div class="qrcode">
+        <div class="qrcode" @click="qrcodeSelect()">
           <img src="../assets/pics/qrcode.png" alt="二维码图片加载失败" />
         </div>
         <div class="path-bar"></div>
         <br/>
-        <!-- 密码登录表单 -->
-        <div class="log-form" :style="isLogForm" >
-          <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
-          <input type="password" class="pass-form-item" placeholder="请输入登录密码" />
-          <!-- </div><div></div> -->
-          <div class="select-line">
-            <input type="checkbox" id="auto-log-check" />
-            <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
+        <!-- 各大表单 -->
+        <form method="post" @submit="checkForm">
+          <ul>
+            <li v-for="error in errors">{{error}}</li>
+          </ul>
+          <!-- 密码登录表单 -->
+          <div class="log-form" :style="isLogForm" >
+            <input class="user-form-item" placeholder="请输入手机号/邮箱" v-model.trim="phoneNumberOrEmail"/>
+            <input type="password" class="pass-form-item" placeholder="请输入登录密码" v-model.trim="password"/>
+            <div class="select-line">
+              <input type="checkbox" id="auto-log-check" v-model="autoLogin"/>
+              <label class="auto-log" for="auto-log-check" >一周内自动登录</label>
+              <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
+            </div>
+            <button class="login-button" type="submit">登录</button>
           </div>
-          <button class="login-button">登录</button>
-        </div>
-        <!-- 验证码登录表单 -->
-        <div class="verification-code-form" :style="isVericodeForm">
-          <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
-          <div class="verification-code-line">
-            <input class="verification-code-form-item" placeholder="请输入验证码"/>
-            <button class="verification-code-button">获取验证码</button>
+          <!-- 验证码登录表单 -->
+          <div class="verification-code-form" :style="isVericodeForm">
+            <input class="user-form-item" placeholder="请输入手机号/邮箱" v-model.trim="phoneNumberOrEmail"/>
+            <div class="verification-code-line">
+              <input class="verification-code-form-item" placeholder="请输入验证码" v-model.trim="veriCode"/>
+              <button class="verification-code-button">获取验证码</button>
+            </div>
+            <div class="select-line">
+              <input type="checkbox" id="auto-log-check" v-model="autoLogin"/>
+              <label class="auto-log" for="auto-log-check" >一周内自动登录</label>
+              <label class="password-login" @click="loginSelect()">密码登录</label>
+            </div>
+            <button class="login-button" type="submit">登录</button>
           </div>
-          <div class="select-line">
-            <input type="checkbox" id="auto-log-check" />
-            <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="password-login" @click="loginSelect()">密码登录</label>
+          <!-- 二维码登录 -->
+          <div class="qrcode-form" :style="isQRCodeForm">
+            <img src="../assets/pics/real_qrcode.jpg" alt="二维码加载失败" />
           </div>
-          <button class="login-button">登录</button>
-        </div>
-        <!-- 二维码登录 -->
-        <!-- <div class="qrcode-form"></div> -->
-        <!-- 注册表单 -->
-        <div class="register-form" :style="isRegisterForm">
-          <input class="user-form-item" placeholder="请输入手机号/邮箱"/>
-          <div class="verification-code-line">
-            <input class="verification-code-form-item" placeholder="请输入验证码"/>
-            <button class="verification-code-button">获取验证码</button>
+          <!-- 注册表单 -->
+          <div class="register-form" :style="isRegisterForm">
+            <input class="user-form-item" placeholder="请输入手机号/邮箱" v-model.trim="phoneNumberOrEmail"/>
+            <div class="verification-code-line">
+              <input class="verification-code-form-item" placeholder="请输入验证码" v-model.trim="veriCode"/>
+              <button class="verification-code-button">获取验证码</button>
+            </div>
+            <input type="password" class="pass-form-item" placeholder="密码(6-16个字符组成,区分大小写)" v-model.trim="password"/>
+            <input type="password" class="pass-form-item" placeholder="请再次输入密码" v-model.trim="confirmPassword"/>
+            <div class="select-line">
+              <input type="checkbox" id="auto-log-check" v-model="autoLogin"/>
+              <label class="auto-log" for="auto-log-check" >一周内自动登录</label>
+              <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
+            </div>
+            <button class="register-button" type="submit">注册</button>
           </div>
-          <input type="password" class="pass-form-item" placeholder="请输入密码" />
-          <input type="password" class="pass-form-item" placeholder="请再次输入密码" />
-          <div class="select-line">
-            <input type="checkbox" id="auto-log-check" />
-            <label class="auto-log" for="auto-log-check">一周内自动登录</label>
-            <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label>
-          </div>
-          <button class="register-button">注册</button>
-        </div>
+        </form>
       </div>
       <!-- 页尾 -->
       <div id="footer">
@@ -89,49 +97,114 @@
 </template>
 
 <script>
-  // import LoginForm from "../components/entrance/LogForm.vue"
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        isLogin: true,
-        isRegister: false,
-        isLogForm: "",
-        isRegisterForm: "display: none;",
-        isVericodeForm: "display: none;"
-      }
+// import LoginForm from "../components/entrance/LogForm.vue"
+const apiUrl = ''
+export default {
+  name: 'Login',
+  data () {
+    return {
+      // 以下数据设置是为实现tab页面的切换
+      isLogin: true, // 登陆界面
+      isRegister: false, // 注册界面
+      isLogForm: '',
+      isRegisterForm: 'display: none;',
+      isVericodeForm: 'display: none;',
+      isQRCodeForm: 'display: none;',
+      // 各大参数
+      phoneNumberOrEmail: '',
+      password: '',
+      confirmPassword: '',
+      veriCode: '',
+      autoLogin: false,
+      // 报错
+      errors: []
+    }
+  },
+  methods: {
+    // 以下数据设置是为实现tab页面的切换
+    loginSelect () {
+      this.isLogin = true
+      this.isRegister = false
+      this.isLogForm = ''
+      this.isRegisterForm = ''
+      this.isVericodeForm = 'display: none;'
+      this.isQRCodeForm = 'display: none;'
     },
-    methods: {
-      loginSelect:function() {
-        this.isLogin = true
-        this.isRegister = false
-        this.isLogForm = ""
-        this.isRegisterForm = "display: none;"
-        this.isVericodeForm = "display: none;"
-      },
-      registerSelect:function() {
-        this.isRegister = true
-        this.isLogin = false
-        this.isLogForm = "display: none;"
-        this.isRegisterForm = ""
-        this.isVericodeForm = "display: none;"
-      },
-      vericodeSelect:function() {
-        this.isLogin = true
-        this.isRegister = false
-        this.isLogForm = "display:none"
-        this.isRegisterForm = "display: none;"
-        this.isVericodeForm = ""
+    registerSelect () {
+      this.isRegister = true
+      this.isLogin = false
+      this.isLogForm = 'display: none;'
+      this.isRegisterForm = ''
+      this.isVericodeForm = 'display: none;'
+      this.isQRCodeForm = 'display: none;'
+    },
+    vericodeSelect () {
+      this.isLogin = true
+      this.isRegister = false
+      this.isLogForm = 'display:none'
+      this.isRegisterForm = 'display: none;'
+      this.isVericodeForm = ''
+      this.isQRCodeForm = 'display: none;'
+    },
+    qrcodeSelect () {
+      this.isLogin = true
+      this.isRegister = false
+      this.isLogForm = 'display:none'
+      this.isRegisterForm = 'display: none;'
+      this.isVericodeForm = 'display: none;'
+      this.isQRCodeForm = ''
+    },
+    // 表单验证方法
+    checkForm (e) {
+      // 密码登录验证
+      if (this.isLogForm === '') {
+        if (this.phoneNumberOrEmail === '') {
+          this.errors.push('手机号/邮箱不能为空!')
+        } else if (this.password === '') {
+          this.errors.push('密码不能为空!')
+        } else if (this.password.length < "6" || this.password.length > "16") {
+          this.errors.push('密码长度为6-16位')
+        } else {
+          fetch(apiUrl)
+          .then(async res => {
+            if (res.status === 200) {
+              alert('登录成功');
+            } else if (res.status === 401) {
+              let errorResponse = await res.json();
+              this.errors.push(errorResponse.error);
+            }
+          });
+        }
+      } else if (this.isRegisterForm == "") { //注册验证
+        if(this.phoneNumberOrEmail == "") {
+          this.errors.push("手机号/邮箱不能为空!");
+        } else if(this.veriCode == "") {
+          this.errors.push("验证码不能为空")
+        } else if(this.password == "" || this.confirmPassword) {
+          this.errors.push("密码和确认密码不能为空!");
+        } else if(this.password.length < "6" || this.password.length > "16") {
+          this.errors.push("密码长度为6-16位");
+        } else if(this.password == this.confirmPassword) {
+          this.errors.push("密码和确认密码不一致")
+        }else{
+          return true;
+        }
       }
+      e.preventDefault();
+    },
+    // 邮箱校验方法
+    validateEmail: function (email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
     }
   }
+}
 </script>
 
 <style>
   *,::after,::before{
     box-sizing: border-box;
   }
-
 
   @media (max-width:196px) {
     .d-none {
@@ -265,7 +338,7 @@
   }
 
   /* 表单元素大框 */
-  .log-form, .verification-code-form, .register-form .qrcode-form {
+  .log-form, .verification-code-form, .register-form, .qrcode-form {
     margin-top: 100px;
     display: flex;
     flex-direction: column;
@@ -453,7 +526,10 @@
 
   /* 二维码登录样式 */
   .qrcode-form {
-    /* background-image: url(../assets/pics/real_qrcode.jpg); */
+    margin-top: 0;
+  }
+  .qrcode-form img{
+    transform: scale(0.5);
   }
 
   /* 注册表单样式 */

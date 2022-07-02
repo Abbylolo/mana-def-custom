@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { useRefHistory } from '@vueuse/core'
+
 // import LoginForm from "../components/entrance/LogForm.vue"
 const apiUrl = ''
 export default {
@@ -58,7 +60,7 @@ export default {
       } else {
         new Promise(apiUrl).then(res => {
           if (res.status === 200) {
-            alert('登录成功')
+            this.$router.push("/index")
           } else if (res.status === 401) {
             const errorResponse = res.json()
             this.errors.push(errorResponse.error)

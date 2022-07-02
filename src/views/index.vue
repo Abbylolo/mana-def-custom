@@ -9,44 +9,44 @@
                     <el-menu-item index="1">
                         <template #title>
                             <i class="el-icon-menu"></i>
-                            <span>首页</span>
+                            <router-link to="/home">首页</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="2">
                         <template #title>
                             <i class="el-icon-edit-outline"></i>
-                            <span>违约认定申请</span>
+                            <router-link to="/default/appliciton">违约认定申请</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="3">
                         <template #title>
                             <i class="el-icon-document-checked"></i>
-                            <span>违约重生申请</span>
+                            <router-link to="/default/renewalAppliciton">违约重生申请</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="4">
                         <template #title>
                             <i class="el-icon-search"></i>
-                            <span>违约信息查询</span>
+                            <router-link to="/dataSearch">违约信息查询</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="5">
                         <template #title>
                             <i class="el-icon-pie-chart"></i>
-                            <span>违约统计</span>
+                            <router-link to="/statistics">违约统计</router-link>
                         </template>
                     </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-container>
                 <el-header style="text-align: right; font-size: 12px">
-                    <i class="el-icon-setting" style="margin-right: 15px" @click="back">退出登录</i>
+                    <i class="el-icon-setting" style="margin-right: 5px"></i>
+                    <router-link to="/" style="margin-right: 10px">退出登录</router-link>
                     <span>admin</span>
                 </el-header>
                 <el-main>
-                    内容
+                    <router-view />
                 </el-main>
-                <el-footer>Footer</el-footer>
             </el-container>
         </el-container>
     </div>

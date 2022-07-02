@@ -60,7 +60,7 @@ export default {
       } else {
         new Promise(apiUrl).then(res => {
           if (res.status === 200) {
-            this.$router.push("/index")
+            this.$router.push("/home")
           } else if (res.status === 401) {
             const errorResponse = res.json()
             this.errors.push(errorResponse.error)

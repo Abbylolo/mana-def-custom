@@ -7,7 +7,7 @@
     <div class="login-register-wrapper">
       <div class="login-register-tab">
         <div class="login-text">
-          违约用户管理系统
+          违约客户管理系统
         </div>
       </div>
       <br />
@@ -20,7 +20,7 @@
         <!-- <label class="auto-log" for="auto-log-check" >一周内自动登录</label> -->
         <!-- <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label> -->
         <!-- </div> -->
-        <button class="login-button" @click.prevent="checkForm">登录</button>
+        <button class="login-button" @click="checkForm">登录</button>
       </div>
     </div>
   </div>
@@ -28,7 +28,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-const apiUrl = ''
+const loginiApi = ''
 export default {
   name: 'Login',
   data () {
@@ -45,25 +45,47 @@ export default {
   methods: {
     // 表单验证方法
     checkForm () {
+      const regTel = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
       // 密码登录验证
       if (this.phoneNumber === '') {
-        // this.errors.push('手机号/邮箱不能为空!')
+        // this.errors.push('手机号不能为空!')
         ElMessage({
           showClose: true,
-          message: '手机号/邮箱不能为空!',
+          message: '手机号不能为空!',
+          type: 'error'
+        })
+      } else if (!regTel.test(this.phoneNumber)) {
+        ElMessage({
+          showClose: true,
+          message: '请正确填写您的手机号码！',
           type: 'error'
         })
       } else if (this.password === '') {
-        this.errors.push('密码不能为空!')
+        ElMessage({
+          showClose: true,
+          message: '密码不能为空!',
+          type: 'error'
+        })
       } else if (this.password.length < '6' || this.password.length > '16') {
-        this.errors.push('密码长度为6-16位')
+        ElMessage({
+          showClose: true,
+          message: '密码长度为6-16位',
+          type: 'error'
+        })
       } else {
-        new Promise(apiUrl).then(res => {
-          if (res.status === '200') {
+        this.$router.push('/index')
+        this.$api.post(loginiApi, {
+          phoneNumber: this.phoneNumber,
+          password: this.password
+        }).then(res => {
+          if (res.code === '200') {
             this.$router.push('/index')
-          } else if (res.status === 401) {
-            const errorResponse = res.json()
-            this.errors.push(errorResponse.error)
+          } else {
+            ElMessage({
+              showClose: true,
+              message: res.json().message,
+              type: 'error'
+            })
           }
         })
       }

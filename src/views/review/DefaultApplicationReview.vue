@@ -5,9 +5,9 @@
 </template>
 
 <script>
-    export default {
-        name:'DefaultApplicationReview',
-    }
+export default {
+  name: 'DefaultApplicationReview'
+}
 </script>
 
 <style>

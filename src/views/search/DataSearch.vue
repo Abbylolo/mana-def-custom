@@ -169,7 +169,7 @@
           label="审核状态"
           width="100"
         />
-        <el-table-column 
+        <el-table-column
           prop="defaultSeverity"
           label="严重程度"
           width="100"
@@ -218,142 +218,142 @@
 
 <script>
 export default {
-    name:'DataSearch',
-    data() {
-      return {
-        loading: false,
-        //初始显示
-        querydata:true,
-        severityOptions:[
-          {
-            value: 0,
-            label: '低'
-          },
-          {
-            value: 1,
-            label: '中'
-          },
-          {
-            value: 2,
-            label: '高'
-          },
-        ],
-        reviewOptions:[
-          {
-            value: 0,
-            label: '未审核'
-          },
-          {
-            value: 1,
-            label: '审核通过'
-          },
-          {
-            value: 2,
-            label: '审核不通过'
-          },
-        ],
-        reteOptions:[
-          {
-            value: 0,
-            label: '不违约'
-          },
-          {
-            value: 1,
-            label: '违约'
-          }
-        ],
-        sponsorOptions:[
-          {
-            value: 0,
-            label: '申请人'
-          },
-          {
-            value: 1,
-            label: '审核人'
-          }
-        ],
-        form: {
-          defaultId:'',
-          clientId: '',
-          clientName: '',
-          defaultState:'',
-          sponsorName:'',
-          defaultRete:'',
-          defaultCreated:'',
-          defaultReviewed:'',
-          defaultSeverity:'',
-          defaultNotch: false,
-          defaultCancel:false,
-          defaultDelay:false,
-          defaultRelate:false,
-          defaultSubstitute:false,
-          defaultBankrupt:false,
-          defaultExternal:false,
-          pageNum: 1,
-          pageSize: 10,
-          ksrq: '', //查询开始日期
-          jsrq: '', //查询结束日期
-          params: {
-            beginTime: "",
-            endTime: ""
-          }
+  name: 'DataSearch',
+  data () {
+    return {
+      loading: false,
+      // 初始显示
+      querydata: true,
+      severityOptions: [
+        {
+          value: 0,
+          label: '低'
         },
-        tableData: [],
-        // 总条数
-        total: 0,
-        // 当前页数
-        currentPage: 1,
-        // 每页显示条数
-        pageSizes: [10, 20, 30, 50],
-        pickerOptions: {
-          shortcuts: [{
-            text: '即刻',
-            onClick(picker) {
-              const date = new Date();
-              picker.$emit('pick', date);
-            }
-          },{
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          },{
-            text: '本月',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.setDate(1));
-              picker.$emit('pick', date);
-            }
-          }]
+        {
+          value: 1,
+          label: '中'
+        },
+        {
+          value: 2,
+          label: '高'
         }
+      ],
+      reviewOptions: [
+        {
+          value: 0,
+          label: '未审核'
+        },
+        {
+          value: 1,
+          label: '审核通过'
+        },
+        {
+          value: 2,
+          label: '审核不通过'
+        }
+      ],
+      reteOptions: [
+        {
+          value: 0,
+          label: '不违约'
+        },
+        {
+          value: 1,
+          label: '违约'
+        }
+      ],
+      sponsorOptions: [
+        {
+          value: 0,
+          label: '申请人'
+        },
+        {
+          value: 1,
+          label: '审核人'
+        }
+      ],
+      form: {
+        defaultId: '',
+        clientId: '',
+        clientName: '',
+        defaultState: '',
+        sponsorName: '',
+        defaultRete: '',
+        defaultCreated: '',
+        defaultReviewed: '',
+        defaultSeverity: '',
+        defaultNotch: false,
+        defaultCancel: false,
+        defaultDelay: false,
+        defaultRelate: false,
+        defaultSubstitute: false,
+        defaultBankrupt: false,
+        defaultExternal: false,
+        pageNum: 1,
+        pageSize: 10,
+        ksrq: '', // 查询开始日期
+        jsrq: '', // 查询结束日期
+        params: {
+          beginTime: '',
+          endTime: ''
+        }
+      },
+      tableData: [],
+      // 总条数
+      total: 0,
+      // 当前页数
+      currentPage: 1,
+      // 每页显示条数
+      pageSizes: [10, 20, 30, 50],
+      pickerOptions: {
+        shortcuts: [{
+          text: '即刻',
+          onClick (picker) {
+            const date = new Date()
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '本月',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.setDate(1))
+            picker.$emit('pick', date)
+          }
+        }]
       }
-    },
-    methods:{
-      resetForm() {
-        this.form = {
-            clientId: '',
-              defaultId:'',
-              clientName: '',
-              defaultState:'',
-              sponsorName:'',
-              defaultRete:'',
-              defaultCreated:'',
-              defaultReviewed:'',
-              defaultSeverity:'',
-              defaultNotch: false,
-              defaultCancel:false,
-              defaultDelay:false,
-              defaultRelate:false,
-              defaultSubstitute:false,
-              defaultBankrupt:false,
-              defaultExternal:false,
-              pageNum: 1,
-              pageSize: 10,
-        };
-      this.$refs.dateTimeRange.clear();
-    },
+    }
+  },
+  methods: {
+    resetForm () {
+      this.form = {
+        clientId: '',
+        defaultId: '',
+        clientName: '',
+        defaultState: '',
+        sponsorName: '',
+        defaultRete: '',
+        defaultCreated: '',
+        defaultReviewed: '',
+        defaultSeverity: '',
+        defaultNotch: false,
+        defaultCancel: false,
+        defaultDelay: false,
+        defaultRelate: false,
+        defaultSubstitute: false,
+        defaultBankrupt: false,
+        defaultExternal: false,
+        pageNum: 1,
+        pageSize: 10
+      }
+      this.$refs.dateTimeRange.clear()
+    }
   }
 }
 </script>
@@ -383,7 +383,7 @@ export default {
       thead
         background rgba(240, 244, 247, 1)
       #el-table
-        
+
       .tag
         display inline-block
         width 58px
@@ -418,5 +418,5 @@ export default {
       .pagination_zone
         margin-top 20px
         text-align right
-  
+
 </style>

@@ -2,7 +2,7 @@
   <!-- 页中 -->
   <div class="main">
     <div id="hello">
-      <img src="../assets/pics/main.png" alt="图片走丢啦" style="width:100%"/>
+      <img src="../assets/pics/main.png" alt="图片走丢啦" style="width:100%" />
     </div>
     <div class="login-register-wrapper">
       <div class="login-register-tab">
@@ -11,28 +11,23 @@
         </div>
       </div>
       <br />
-      <!-- 各大表单 -->
-      <form method="post" @submit="checkForm">
-        <!-- 密码登录表单 -->
-        <div class="log-form" :style="isLogForm">
-          <input class="user-form-item" placeholder="请输入手机号" v-model.trim="phoneNumber" />
-          <input type="password" class="pass-form-item" placeholder="请输入登录密码" v-model.trim="password" />
-          <!-- <div class="select-line"> -->
-          <!-- <input type="checkbox" id="auto-log-check" v-model="autoLogin"/> -->
-          <!-- <label class="auto-log" for="auto-log-check" >一周内自动登录</label> -->
-          <!-- <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label> -->
-          <!-- </div> -->
-          <button class="login-button" type="submit">登录</button>
-        </div>
-      </form>
+      <!-- 密码登录表单 -->
+      <div class="log-form">
+        <input class="user-form-item" placeholder="请输入手机号" v-model.trim="phoneNumber" />
+        <input type="password" class="pass-form-item" placeholder="请输入登录密码" v-model.trim="password" />
+        <!-- <div class="select-line"> -->
+        <!-- <input type="checkbox" id="auto-log-check" v-model="autoLogin"/> -->
+        <!-- <label class="auto-log" for="auto-log-check" >一周内自动登录</label> -->
+        <!-- <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label> -->
+        <!-- </div> -->
+        <button class="login-button" @click.prevent="checkForm">登录</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { useRefHistory } from '@vueuse/core'
-
-// import LoginForm from "../components/entrance/LogForm.vue"
+import { ElMessage } from 'element-plus'
 const apiUrl = ''
 export default {
   name: 'Login',
@@ -49,33 +44,35 @@ export default {
   },
   methods: {
     // 表单验证方法
-    checkForm (e) {
+    checkForm () {
       // 密码登录验证
       if (this.phoneNumber === '') {
-        this.errors.push('手机号/邮箱不能为空!')
+        // this.errors.push('手机号/邮箱不能为空!')
+        ElMessage({
+          showClose: true,
+          message: '手机号/邮箱不能为空!',
+          type: 'error'
+        })
       } else if (this.password === '') {
         this.errors.push('密码不能为空!')
       } else if (this.password.length < '6' || this.password.length > '16') {
         this.errors.push('密码长度为6-16位')
       } else {
         new Promise(apiUrl).then(res => {
-          if (res.status === 200) {
-            this.$router.push("/home")
+          if (res.status === '200') {
+            this.$router.push('/index')
           } else if (res.status === 401) {
             const errorResponse = res.json()
             this.errors.push(errorResponse.error)
           }
         })
       }
-      e.preventDefault()
     }
   }
 }
 </script>
 
 <style>
-
-
   *,::after,::before{
     box-sizing: border-box;
   }

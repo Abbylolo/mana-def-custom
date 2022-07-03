@@ -12,16 +12,28 @@
                             <router-link to="/home">首页</router-link>
                         </template>
                     </el-menu-item>
-                    <el-menu-item index="2">
+                    <el-menu-item index="2" v-if="!isReview">
                         <template #title>
                             <i class="el-icon-edit-outline"></i>
-                            <router-link to="/default/appliciton">违约认定申请</router-link>
+                            <router-link to="/application/default">违约认定申请</router-link>
                         </template>
                     </el-menu-item>
-                    <el-menu-item index="3">
+                    <el-menu-item index="2" v-if="isReview">
+                        <template #title>
+                            <i class="el-icon-s-claim"></i>
+                            <router-link to="/review/defaultApplication">违约认定审核</router-link>
+                        </template>
+                    </el-menu-item>
+                    <el-menu-item index="3" v-if="!isReview">
                         <template #title>
                             <i class="el-icon-document-checked"></i>
-                            <router-link to="/default/renewalAppliciton">违约重生申请</router-link>
+                            <router-link to="/application/defaultRenewal">违约重生申请</router-link>
+                        </template>
+                    </el-menu-item>
+                    <el-menu-item index="3" v-if="isReview">
+                        <template #title>
+                            <i class="el-icon-circle-check"></i>
+                            <router-link to="/review/defaultRenewalApplication">违约重生审核</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="4">
@@ -55,10 +67,13 @@
 <script>
     export default{
         name: 'Login',
-        methods: {
-            back(){
-                this.$router.push("/");
+        data(){
+            return{
+                isReview:false,
             }
+        },
+        methods: {
+            
         }
     }
 </script>

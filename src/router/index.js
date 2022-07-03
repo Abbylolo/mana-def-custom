@@ -2,12 +2,12 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import index from '../views/index'
 import Home from '../views/components/Home'
-import DefaultApplication from '../views/components/DefaultApplication'
-import DefaultRenewalApplication from '../views/components/DefaultRenewalApplication'
-import DataSearch from '../views/components/DataSearch'
-import DefaultStatistics from '../views/components/DefaultStatistics'
-import DefaultApplicationReview from '../views/components/DefaultApplicationReview'
-import DefaultRenewalApplicationReview from '../views/components/DefaultRenewalApplicationReview'
+import DefaultApplication from '../views/application/DefaultApplication'
+import DefaultRenewalApplication from '../views/application/DefaultRenewalApplication'
+import DataSearch from '../views/search/DataSearch'
+import DefaultStatistics from '../views/search/DefaultStatistics'
+import DefaultApplicationReview from '../views/review/DefaultApplicationReview'
+import DefaultRenewalApplicationReview from '../views/review/DefaultRenewalApplicationReview'
 import DefaultReasons from '../views/components/DefaultReasons'
 
 const routes = [
@@ -28,12 +28,12 @@ const routes = [
         component: Home
       },
       {
-        path:'/default/appliciton',
+        path:'/application/default',
         name:'DefaultApplication',
         component: DefaultApplication
       },
       {
-        path:'/default/renewalAppliciton',
+        path:'/application/defaultRenewal',
         name:'DefaultRenewalApplication',
         component: DefaultRenewalApplication
       },
@@ -47,6 +47,16 @@ const routes = [
         name:'DefaultStatistics',
         component:DefaultStatistics
 
+      },
+      {
+        path:'/review/defaultApplication',
+        name:'DefaultApplicationReview',
+        component:DefaultApplicationReview
+      },
+      {
+        path:'/review/defaultRenewalApplication',
+        name:'DefaultRenewalApplicationReview',
+        component:DefaultRenewalApplicationReview
       },
     ]
   },

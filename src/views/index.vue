@@ -48,6 +48,12 @@
                             <router-link to="/statistics">违约统计</router-link>
                         </template>
                     </el-menu-item>
+                    <el-menu-item index="6" v-if="isReview">
+                        <template #title>
+                            <i class="el-icon-s-tools"></i>
+                            <router-link to="/reasons">违约风险原因维护</router-link>
+                        </template>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-container>
@@ -69,7 +75,7 @@
         name: 'Login',
         data(){
             return{
-                isReview:false,
+                isReview:true,
             }
         },
         methods: {

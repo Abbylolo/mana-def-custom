@@ -58,6 +58,11 @@ const routes = [
         name:'DefaultRenewalApplicationReview',
         component:DefaultRenewalApplicationReview
       },
+      {
+        path:'/reasons',
+        name:'DefaultReasons',
+        component:DefaultReasons
+      },
     ]
   },
     

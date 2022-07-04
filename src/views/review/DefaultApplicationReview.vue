@@ -35,13 +35,14 @@
           :empty-text="querydata == true ? '点击按钮查询' : '暂无数据'">
           <el-table-column prop="clientName" label="客户姓名" :show-overflow-tooltip="true" fixed />
           <el-table-column prop="defaultState" label="审核状态" width="100" fixed />
-          <el-table-column prop="defaultId" label="违约记录id" width="150" />
-          <el-table-column prop="clientId" label="客户id" width="150" />
-          <el-table-column prop="defaultSeverity" label="严重程度" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="sponsorName" label="认定人" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultRete" label="最新外部等级" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultCreated" label="认定申请时间" width="140" show-overflow-tooltip />
-          <el-table-column prop="defaultReviewed" label="认定审核时间" width="140" show-overflow-tooltip />
+          <el-table-column prop="defaultId" label="违约记录编号" width="150" />
+          <el-table-column prop="clientSex" label="性别" width="150" />
+          <el-table-column prop="clientIdCard" label="身份证号" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientTel" label="电话号码" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientEmail" label="邮箱" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientRete" label="最新外部等级" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientCreated" label="创建时间" width="140" show-overflow-tooltip />
+          <el-table-column prop="clientState" label="客户状态" width="140" show-overflow-tooltip />
           <el-table-column label="操作" width="100" fixed="right">
             <template v-slot="scope">
               <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
@@ -120,32 +121,12 @@ export default {
         }
       ],
       form: {
-        clientId: '',
+        clientName: '',
         defaultState: '',
         pageNum: 1,
         pageSize: 10
       },
-      tableData: [{
-        defaultId: '001',
-        clientId: '19051666',
-        clientName: '鲁六',
-        defaultState: '0',
-        defaultSeverity: '0',
-        sponsorName: '罗姐',
-        defaultRete: '1',
-        defaultCreated: '2022-7-2',
-        defaultReviewed: '2022-7-3'
-      }, {
-        defaultId: '002',
-        clientId: '19051888',
-        clientName: '华八',
-        defaultState: '1',
-        defaultSeverity: '1',
-        sponsorName: '科结',
-        defaultRete: '1',
-        defaultCreated: '2022-7-2',
-        defaultReviewed: '2022-7-3'
-      }],
+      tableData: [],
       // 总条数
       total: 0,
       // 当前页数
@@ -173,15 +154,32 @@ export default {
     },
     // 查询
     searchTableData () {
-      this.$api.get('queryClient', {
+      this.$api.get('default/queryDefault', {
         params: {
-          clientId: this.form.clientName,
-          clientState: this.form.defaultState
+          defaultId: '',
+          clientId: '',
+          clientName: '' || this.form.clientName,
+          sponsorId: '',
+          sponsorName: '',
+          defaultState: '' || this.form.defaultState,
+          defaultRete: '',
+          defaultSeverity: '',
+          defaultNotch: '',
+          defaultCancel: '',
+          defaultDelay: '',
+          defaultRelate: '',
+          defaultSubstitute: '',
+          defaultBankrupt: '',
+          defaultExternal: '',
+          startCreated: '',
+          endCreated: '',
+          startReviewed: '',
+          endReviewed: ''
         }
       }).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.tableData = res.data
+          this.tableData = res.data.data
           this.$forceUpdate()
         } else {
           ElMessage({

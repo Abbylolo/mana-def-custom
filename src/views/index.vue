@@ -59,27 +59,26 @@
 </template>
 
 <script>
-    export default{
-        name: 'index',
-        data(){
-            return{
-                loginName:''
-            }
-        },
-        created(){
-            this.checkIdentity();
-        },
-        methods: {
-            checkIdentity(){
-                this.$api.get('/reviewer/queryAll',{
-                }).then( res =>{
-                    this.loginName=res.data.data[0].reviewerName
-                })
-            }
-        }
+export default {
+  name: 'index',
+  data () {
+    return {
+      loginName: ''
     }
+  },
+  created () {
+    this.checkIdentity()
+  },
+  methods: {
+    checkIdentity () {
+      this.$api.get('/reviewer/queryAll', {}).then(
+        res => {
+          this.loginName = res.data.data[0].reviewerName
+        })
+    }
+  }
+}
 </script>
-
 
 <style scoped>
     .el-header {
@@ -87,7 +86,7 @@
         color: #333;
         line-height: 60px;
     }
-  
+
     .el-aside {
         color: #333;
         height:100%;

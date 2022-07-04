@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 import Dialog from './Dialog'
 export default {
   name: 'DefaultApplicationReview',
@@ -119,23 +120,10 @@ export default {
         }
       ],
       form: {
-        defaultId: '',
         clientId: '',
-        clientName: '',
         defaultState: '',
-        sponsorName: '',
-        defaultRete: '',
-        defaultCreated: '',
-        defaultReviewed: '',
-        defaultSeverity: '',
         pageNum: 1,
-        pageSize: 10,
-        ksrq: '', // 查询开始日期
-        jsrq: '', // 查询结束日期
-        params: {
-          beginTime: '',
-          endTime: ''
-        }
+        pageSize: 10
       },
       tableData: [{
         defaultId: '001',
@@ -185,7 +173,24 @@ export default {
     },
     // 查询
     searchTableData () {
-      // ..
+      this.$api.get('queryClient', {
+        params: {
+          clientId: this.form.clientName,
+          clientState: this.form.defaultState
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.tableData = res.data
+          this.$forceUpdate()
+        } else {
+          ElMessage({
+            showClose: true,
+            message: res.data.message,
+            type: 'error'
+          })
+        }
+      })
     },
     // 重置
     resetForm () {

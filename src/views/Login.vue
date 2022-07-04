@@ -20,6 +20,10 @@
         <!-- <label class="auto-log" for="auto-log-check" >一周内自动登录</label> -->
         <!-- <label class="veri-code-login" @click="vericodeSelect()">验证码登录</label> -->
         <!-- </div> -->
+        <div class="select-line">
+          <el-radio v-model="role" label="sponsor">申请人员</el-radio>
+          <el-radio v-model="role" label="reviewer">审核人员</el-radio>
+        </div>
         <button class="login-button" @click="checkForm">登录</button>
       </div>
     </div>
@@ -28,12 +32,11 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-const loginiApi = ''
 export default {
   name: 'Login',
   data () {
     return {
-      // 各大参数
+      role: 'sponsor',
       phoneNumber: '',
       password: '',
       confirmPassword: '',
@@ -73,21 +76,37 @@ export default {
           type: 'error'
         })
       } else {
-        this.$router.push('/index')
-        this.$api.post(loginiApi, {
-          phoneNumber: this.phoneNumber,
-          password: this.password
-        }).then(res => {
-          if (res.code === '200') {
-            this.$router.push('/index')
-          } else {
-            ElMessage({
-              showClose: true,
-              message: res.json().message,
-              type: 'error'
-            })
-          }
-        })
+        if (this.role === 'sponsor') {
+          this.$api.post('sponsor/login?sponsorPwd=' + this.phoneNumber + '&sponsorTel=' + this.password, {
+            sponsorTel: this.phoneNumber.toString(),
+            sponsorPwd: this.password
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$router.push('/index')
+            } else {
+              ElMessage({
+                showClose: true,
+                message: res.data.message,
+                type: 'error'
+              })
+            }
+          })
+        } else {
+          this.$api.post('reviewer/login?reviewerPwd=' + this.phoneNumber + '&reviewerTel=' + this.password, {
+            reviewerTel: this.phoneNumber.toString(),
+            reviewerPwd: this.password
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.$router.push('/index')
+            } else {
+              ElMessage({
+                showClose: true,
+                message: res.data.message,
+                type: 'error'
+              })
+            }
+          })
+        }
       }
     }
   }

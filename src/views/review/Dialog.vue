@@ -44,6 +44,9 @@ export default {
       this.$nextTick(() => {
         this.$emit('setReject', this.dialogFormVisible)
       })
+      this.$api.post('updateDefalutStateToFail', {
+        // ....
+      })
     },
     passed () {
       this.dialogFormVisible = false

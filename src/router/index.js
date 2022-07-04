@@ -9,6 +9,8 @@ import DefaultStatistics from '../views/search/DefaultStatistics'
 import DefaultApplicationReview from '../views/review/DefaultApplicationReview'
 import DefaultRenewalApplicationReview from '../views/review/DefaultRenewalApplicationReview'
 import DefaultReasons from '../views/components/DefaultReasons'
+import fillDetail from '../views/application/components/fillDetail'
+import fillRenewalDetail from '../views/application/components/fillRenewalDetail'
 
 const routes = [
   {
@@ -62,6 +64,16 @@ const routes = [
         path:'/reasons',
         name:'DefaultReasons',
         component:DefaultReasons
+      },
+      {
+        path:'/application/default/fill',
+        name:'fillDetail',
+        component:fillDetail
+      },
+      {
+        path:'/application/default/renewalFill',
+        name:'fillRenewalDetail',
+        component:fillRenewalDetail
       },
     ]
   },

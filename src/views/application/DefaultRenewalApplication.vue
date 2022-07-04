@@ -66,6 +66,19 @@
           </el-col>
           <el-col :span="7">
             <el-form-item>
+                <el-input
+                v-model="form.sponsorId"
+                placeholder="认定人ID"
+                clearable
+                @keyup.enter="searchTableData"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="1">
+            <el-button @click="resetForm">重&nbsp;置</el-button>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item>
               <el-select v-model="form.sponsorName" placeholder="认定人">
                 <el-option
                   v-for="item in sponsorOptions"
@@ -75,9 +88,6 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="1">
-            <el-button @click="resetForm">重&nbsp;置</el-button>
           </el-col>
           <el-col :span="7">
             <el-form-item>
@@ -92,24 +102,58 @@
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item >
+            <el-form-item label="认定开始时间">
               <el-date-picker
-                v-model="form.defaultCreated"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="认定申请开始日期"
-                end-placeholder="认定申请结束日期">
+                :picker-options="pickerOptionsStart"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.startCreated"
+                type="date"
+                placeholder="选择开始时间"
+                >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item>
+            <el-form-item label="认定结束时间">
               <el-date-picker
-                v-model="form.defaultReviewed"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="认定审核开始日期"
-                end-placeholder="认定审核结束日期">
+                :picker-options="pickerOptionsEnd"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.endCreated"
+                type="date"
+                placeholder="选择结束时间"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="审核开始时间">
+              <el-date-picker
+                :picker-options="pickerOptionsStart"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.startReviewed"
+                type="date"
+                placeholder="选择开始时间"
+                >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="审核结束时间">
+              <el-date-picker
+                :picker-options="pickerOptionsEnd"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.endReviewed"
+                type="date"
+                placeholder="选择结束时间"
+              >
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -208,7 +252,7 @@
           :current-page="form.pageNum"
           :page-sizes="pageSizes"
           :page-size="form.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next"
           :total="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -280,6 +324,7 @@
               // 客户名称
               clientName: '',
               defaultState:'',
+              sponsorId:'',
               sponsorName:'',
               defaultRete:'',
               defaultCreated:'',
@@ -294,12 +339,10 @@
               defaultExternal:false,
               pageNum: 1,
               pageSize: 10,
-              ksrq: '', //查询开始日期
-              jsrq: '', //查询结束日期
-              params: {
-                beginTime: "",
-                endTime: ""
-              }
+              startCreated: '',
+              endCreated: '',
+              startReviewed:'',
+              endReviewed:''
             },
             tableData: [],
             // 总条数
@@ -334,12 +377,70 @@
           };
         },
         methods:{
+          searchTableData(){
+            this.loading = true;
+            // 组装数据 将日期加到 form 中
+            //this.form.params.beginTime = this.form.ksrq;
+            //this.form.params.endTime = this.form.jsrq;
+            // 数据初始化
+            this.tableData = [];
+            this.total = 0;
+            this.$api.get('/default/queryDefault',{
+              params:{
+                defaultId: this.form.defaultId,
+                clientId: this.form.clientId,
+                clientName: this.form.clientName,
+                sponsorId: this.form.sponsorId,
+                sponsorName: this.form.sponsorName,
+                defaultState: this.form.defaultState,
+                defaultSeverity: this.form.defaultSeverity,
+                defaultNotch: this.form.defaultNotch,
+                defaultCancel: this.form.defaultCancel,
+                defaultDelay: this.form.defaultDelay,
+                defaultRelate: this.form.defaultRelate,
+                defaultSubstitute: this.form.defaultSubstitute,
+                defaultBankrupt: this.form.defaultBankrupt,
+                defaultExternal: this.form.defaultExternal,
+                startCreated: this.form.startCreated,
+                endCreated: this.form.endCreated,
+                startReviewed: this.form.startReviewed,
+                endReviewed: this.form.endReviewed
+              }
+            }).then(res => {
+                //res.rows.forEach(item => {
+                //  let arr = item.cdxxtb.split("/");
+                //  if (arr[0] == arr[1]) {
+                //    item.cdxxtb = "全部已完成";
+                //  } else {
+                //    item.cdxxtb += "已完成";
+                //  }
+                //});
+                this.total = res.data.data.length;
+                this.tableData = res.data.data;
+                this.tableData.map(item=>{
+                  item.defaultCreated=item.defaultCreated.slice(0,10);
+                  item.defaultReview=item.defaultReviewed.slice(0,10);
+                })
+                console.log('tableData')
+                console.log(this.tableData)
+                this.loading = false;
+                // console.log("----",this.tableData);
+                if(this.tableData.length == 0){
+                  this.querydata = false;
+                }
+              })
+              .finally(res => {
+                // console.error(res);
+                this.loading = false;
+            });
+          },
           resetForm() {
           this.form = {
-            clientId: '',
+              clientId: '',
               defaultId:'',
               clientName: '',
               defaultState:'',
+              sponsorId:'',
               sponsorName:'',
               defaultRete:'',
               defaultCreated:'',
@@ -354,9 +455,10 @@
               defaultExternal:false,
               pageNum: 1,
               pageSize: 10,
-
-              pageNum: 1,
-              pageSize: 10,
+              startCreated: '',
+              endCreated: '',
+              startReviewed:'',
+              endReviewed:''
             //ksrq: getNearlyRecentYear(2019)[0], //查询开始日期
             //jsrq: getNearlyRecentYear(2019)[1], //查询结束日期
             // ksrq: "", //查询开始日期

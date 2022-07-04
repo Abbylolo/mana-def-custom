@@ -75,7 +75,7 @@
         name: 'Login',
         data(){
             return{
-                isReview:true,
+                isReview:false,
             }
         },
         methods: {

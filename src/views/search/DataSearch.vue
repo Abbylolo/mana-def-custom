@@ -1,6 +1,7 @@
 <template>
   <h1>违约信息查询</h1>
-  <div class="content">
+  <default-detail ref="submitDialog" @setReject="diaglogSet " @setPass="diaglogSet" @close="dialogFormVisible=false"></default-detail>
+  <div class="content" v-show="!dialogFormVisible">
     <div class="search_zone">
       <!-- <h4 class="layout-small-title">自定义搜索</h4> -->
       <el-form ref="searchForm" :model="form">
@@ -64,6 +65,19 @@
           </el-col>
           <el-col :span="7">
             <el-form-item>
+                <el-input
+                v-model="form.sponsorId"
+                placeholder="认定人ID"
+                clearable
+                @keyup.enter="searchTableData"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="1">
+            <el-button @click="resetForm">重&nbsp;置</el-button>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item>
               <el-select v-model="form.sponsorName" placeholder="认定人">
                 <el-option
                   v-for="item in sponsorOptions"
@@ -73,9 +87,6 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="1">
-            <el-button @click="resetForm">重&nbsp;置</el-button>
           </el-col>
           <el-col :span="7">
             <el-form-item>
@@ -90,24 +101,58 @@
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item >
+            <el-form-item label="认定开始时间">
               <el-date-picker
-                v-model="form.defaultCreated"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="认定申请开始日期"
-                end-placeholder="认定申请结束日期">
+                :picker-options="pickerOptionsStart"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.startCreated"
+                type="date"
+                placeholder="选择开始时间"
+                >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item>
+            <el-form-item label="认定结束时间">
               <el-date-picker
-                v-model="form.defaultReviewed"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="认定审核开始日期"
-                end-placeholder="认定审核结束日期">
+                :picker-options="pickerOptionsEnd"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.endCreated"
+                type="date"
+                placeholder="选择结束时间"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="审核开始时间">
+              <el-date-picker
+                :picker-options="pickerOptionsStart"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.startReviewed"
+                type="date"
+                placeholder="选择开始时间"
+                >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="审核结束时间">
+              <el-date-picker
+                :picker-options="pickerOptionsEnd"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.endReviewed"
+                type="date"
+                placeholder="选择结束时间"
+              >
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -196,7 +241,7 @@
         />
         <el-table-column label="操作" width="100">
           <template v-slot="scope">
-            <el-button type="text" size="mini" @click="checkDetail(scope.row)">查看详情</el-button>
+            <el-button type="text" size="mini" @click="checkDetail(scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -206,7 +251,7 @@
           :current-page="form.pageNum"
           :page-sizes="pageSizes"
           :page-size="form.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next"
           :total="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -217,11 +262,17 @@
 </template>
 
 <script>
+import defaultDetail from './defaultDetail.vue'
+
 export default {
   name: 'DataSearch',
+  components: {
+    defaultDetail
+  },
   data () {
     return {
       loading: false,
+      dialogFormVisible: false,
       // 初始显示
       querydata: true,
       severityOptions: [
@@ -277,6 +328,7 @@ export default {
         clientId: '',
         clientName: '',
         defaultState: '',
+        sponsorId: '',
         sponsorName: '',
         defaultRete: '',
         defaultCreated: '',
@@ -291,14 +343,25 @@ export default {
         defaultExternal: false,
         pageNum: 1,
         pageSize: 10,
-        ksrq: '', // 查询开始日期
-        jsrq: '', // 查询结束日期
-        params: {
-          beginTime: '',
-          endTime: ''
-        }
+        startCreated: '',
+        endCreated: '',
+        startReviewed:'',
+        endReviewed:''
       },
-      tableData: [],
+      tableData: [
+        {
+          defaultId:1,
+          clientId:1,
+          clientName:'12',
+          defaultState: '123',
+          sponsorId: '1',
+          sponsorName: '23',
+          defaultRete: '1',
+          defaultCreated: '222',
+          defaultReviewed: '222',
+          defaultSeverity: '222'
+        }
+      ],
       // 总条数
       total: 0,
       // 当前页数
@@ -337,6 +400,7 @@ export default {
         defaultId: '',
         clientName: '',
         defaultState: '',
+        sponsorId:'',
         sponsorName: '',
         defaultRete: '',
         defaultCreated: '',
@@ -349,11 +413,28 @@ export default {
         defaultSubstitute: false,
         defaultBankrupt: false,
         defaultExternal: false,
+        startCreated: '',
+        endCreated: '',
+        startReviewed:'',
+        endReviewed:'',
         pageNum: 1,
         pageSize: 10
       }
-      this.$refs.dateTimeRange.clear()
-    }
+    },
+    diaglogSet (p) {
+      this.$nextTick(() => {
+        this.dialogFormVisible = p
+      })
+    },
+    // 弹出编辑弹窗
+    checkDetail (row) {
+      console.log(row)
+      this.dialogFormVisible = true
+      const p = []
+      p.dialogFormVisible = this.dialogFormVisible
+      p.row = row
+      this.$refs.submitDialog.setProp(p)
+    },
   }
 }
 </script>

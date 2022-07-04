@@ -29,7 +29,7 @@
           </el-col>
           <el-col :span="7">
             <el-form-item>
-                <el-select v-model="form.clientSex" placeholder="客户性别">
+                <el-select v-model="form.clientSex" placeholder="客户性别" clearable>
                 <el-option
                   v-for="item in sexOptions"
                   :key="item.value"
@@ -76,21 +76,50 @@
             <el-button @click="resetForm">重&nbsp;置</el-button>
           </el-col>
           <el-col :span="7">
-            <el-form-item >
+            <el-form-item label="开始时间">
               <el-date-picker
-                v-model="form.clientCreated"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="客户签约开始日期"
-                end-placeholder="客户签约结束日期">
+                :picker-options="pickerOptionsStart"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.startTime"
+                type="date"
+                placeholder="选择开始时间"
+                >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="结束时间">
+              <el-date-picker
+                :picker-options="pickerOptionsEnd"
+                clearable
+                size="small"
+                style="width: 200px"
+                v-model="form.endTime"
+                type="date"
+                placeholder="选择结束时间"
+              >
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="7">
             <el-form-item>
-                <el-select v-model="form.clientRete" placeholder="最新外部等级">
+                <el-select v-model="form.clientRete" placeholder="最新外部等级" clearable>
                 <el-option
                   v-for="item in rateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" v-if="false">
+            <el-form-item>
+                <el-select v-model="form.clientState" placeholder="违约状态">
+                <el-option
+                  v-for="item in stateOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -124,7 +153,7 @@
         <el-table-column 
           prop="clientIdCard"
           label="客户身份证号"
-          width="300"
+          width="200"
           :show-overflow-tooltip="true"
         />
         <el-table-column
@@ -145,9 +174,15 @@
           label="最新外部等级"
           :show-overflow-tooltip="true"
         />
+        <el-table-column
+          prop="clientState"
+          label="违约状态"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column label="操作" width="100">
           <template v-slot="scope">
-            <el-button type="text" size="mini" @click="checkDetail(scope.row)">申请</el-button>
+            <el-button type="text" size="mini" @click="checkDetail(scope.row)">查看</el-button>
+            <el-button type="text" size="mini" @click="submitDetail(scope.row)">申请</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -155,11 +190,8 @@
         <el-pagination
           background
           :current-page="form.pageNum"
-          :page-sizes="pageSizes"
-          :page-size="form.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next"
           :total="total"
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
       </div>
@@ -173,6 +205,7 @@
       data() {
         return {
           loading: false,
+          ifSubmit:true,
           //初始显示
           querydata:true,
           sexOptions:[
@@ -186,6 +219,16 @@
             },
           ],
           rateOptions:[
+            {
+              label:'未违约',
+              value:0
+            },
+            {
+              label:'违约',
+              value:1
+            },
+          ],
+          stateOptions:[
             {
               label:'未违约',
               value:0
@@ -209,19 +252,14 @@
             //客户邮箱
             clientEmail: "",
             //客户状态
-            clientState:"",
+            clientState:1,
             //生成客户时间
             clientCreated:"",
             clientRete:"",
             pageNum: 1,
             pageSize: 10,
-            ksrq: "", //查询开始日期
-            jsrq: "", //查询结束日期
-            params: {
-              beginTime: "",
-              endTime: "",
-              // 依据排序的属性名称（从 table 返回的数据中获取）
-            }
+            startTime: "", //查询开始日期
+            endTime: "", //查询结束日期
           },
           tableData: [],
           // 总条数
@@ -229,8 +267,30 @@
           // 当前页数
           currentPage: 1,
           // 每页显示条数
-          pageSizes: [10, 20, 30, 50],
-          pickerOptions: {
+          pickerOptionsStart: {
+            shortcuts: [{
+              text: '即刻',
+              onClick(picker) {
+                const date = new Date();
+                picker.$emit('pick', date);
+              }
+            },{
+              text: '一周前',
+              onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                picker.$emit('pick', date);
+              }
+            },{
+              text: '本月',
+              onClick(picker) {
+                const date = new Date();
+                date.setTime(date.setDate(1));
+                picker.$emit('pick', date);
+              }
+            }]
+          },
+          pickerOptionsEnd: {
             shortcuts: [{
               text: '即刻',
               onClick(picker) {
@@ -266,10 +326,18 @@
           this.total = 0;
           this.$api.get('/client/queryClient',{
             params:{
-              clientId: this.form.clientId
+              clientId: this.form.clientId,
+              clientName: this.form.clientName,
+              clientSex: this.form.clientSex,
+              clientIdCard: this.form.clientIdCard,
+              clientTel: this.form.clientTel,
+              clientEmail: this.form.clientEmail,
+              clientRete: this.form.clientRete,
+              clientState: this.form.clientState,
+              startTime: this.form.startTime,
+              endTime: this.form.endTime
             }
           }).then(res => {
-              console.log(res)
               //res.rows.forEach(item => {
               //  let arr = item.cdxxtb.split("/");
               //  if (arr[0] == arr[1]) {
@@ -278,8 +346,20 @@
               //    item.cdxxtb += "已完成";
               //  }
               //});
-              //this.total = res.total;
-              this.tableData = res.data;
+              this.total = res.data.data.length;
+              this.tableData = res.data.data;
+              this.tableData.map(item=>{
+                if(item.clientRete=='0'){
+                  item.clientRete='低';
+                }else if(item.clientRete=='1'){
+                  item.clientRete='中';
+                }else{
+                  item.clientRete='高';
+                }
+                item.clientCreated=item.clientCreated.slice(0,10);
+              })
+              console.log('tableData')
+              console.log(this.tableData)
               this.loading = false;
               // console.log("----",this.tableData);
               if(this.tableData.length == 0){
@@ -299,10 +379,12 @@
             clientIdCard: "",
             clientTel: "",
             clientEmail: "",
-            clientState: "",
+            clientState: 1,
             clientRete:"",
             pageNum: 1,
             pageSize: 10,
+            startTime: "",
+            endTime: "",
             //ksrq: getNearlyRecentYear(2019)[0], //查询开始日期
             //jsrq: getNearlyRecentYear(2019)[1], //查询结束日期
             // ksrq: "", //查询开始日期
@@ -317,7 +399,6 @@
               //sortOrder: "desc"
             //}
           };
-          this.$refs.dateTimeRange.clear();
         },
       }
     }

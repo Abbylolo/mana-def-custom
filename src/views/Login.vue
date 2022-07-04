@@ -77,31 +77,32 @@ export default {
         })
       } else {
         if (this.role === 'sponsor') {
-          this.$api.post('sponsor/login?sponsorPwd=' + this.phoneNumber + '&sponsorTel=' + this.password, {
+          this.$api.post('sponsor/login?sponsorPwd=' + this.password + '&sponsorTel=' + this.phoneNumber, {
             sponsorTel: this.phoneNumber.toString(),
             sponsorPwd: this.password
           }).then(res => {
-            if (res.data.code === 200) {
+            console.log(res)
+            if (res.data.data !== null) {
               this.$router.push('/index')
             } else {
               ElMessage({
                 showClose: true,
-                message: res.data.message,
+                message: '手机号/密码错误',
                 type: 'error'
               })
             }
           })
         } else {
-          this.$api.post('reviewer/login?reviewerPwd=' + this.phoneNumber + '&reviewerTel=' + this.password, {
+          this.$api.post('reviewer/login?reviewerPwd=' + this.password + '&reviewerTel=' + this.phoneNumber, {
             reviewerTel: this.phoneNumber.toString(),
             reviewerPwd: this.password
           }).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.data !== null) {
               this.$router.push('/index')
             } else {
               ElMessage({
                 showClose: true,
-                message: res.data.message,
+                message: '手机号/密码错误',
                 type: 'error'
               })
             }

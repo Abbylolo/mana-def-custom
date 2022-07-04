@@ -11,12 +11,51 @@ import DefaultRenewalApplicationReview from '../views/review/DefaultRenewalAppli
 import DefaultReasons from '../views/components/DefaultReasons'
 import fillDetail from '../views/application/components/fillDetail'
 import fillRenewalDetail from '../views/application/components/fillRenewalDetail'
+import indexSponsor from '../views/indexSponsor'
+import HomeSponsor from '../views/components/HomeSponsor'
 
 const routes = [
   {
     path: '/',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/index-sponsor',
+    name: 'indexSponsor',
+    component: indexSponsor,
+    children:[
+      {
+        path:'/home-sponsor',
+        name:'HomeSponsor',
+        component: HomeSponsor
+      },
+      {
+        path:'/application/default',
+        name:'DefaultApplication',
+        component: DefaultApplication
+      },
+      {
+        path:'/application/defaultRenewal',
+        name:'DefaultRenewalApplication',
+        component: DefaultRenewalApplication
+      },
+      {
+        path:'/dataSearch',
+        name:'DataSearch',
+        component: DataSearch
+      },
+      {
+        path:'/application/default/fill',
+        name:'fillDetail',
+        component:fillDetail
+      },
+      {
+        path:'/application/default/renewalFill',
+        name:'fillRenewalDetail',
+        component:fillRenewalDetail
+      },
+    ]
   },
   {
     //导航
@@ -28,16 +67,6 @@ const routes = [
         path:'/home',
         name:'Home',
         component: Home
-      },
-      {
-        path:'/application/default',
-        name:'DefaultApplication',
-        component: DefaultApplication
-      },
-      {
-        path:'/application/defaultRenewal',
-        name:'DefaultRenewalApplication',
-        component: DefaultRenewalApplication
       },
       {
         path:'/dataSearch',
@@ -64,17 +93,7 @@ const routes = [
         path:'/reasons',
         name:'DefaultReasons',
         component:DefaultReasons
-      },
-      {
-        path:'/application/default/fill',
-        name:'fillDetail',
-        component:fillDetail
-      },
-      {
-        path:'/application/default/renewalFill',
-        name:'fillRenewalDetail',
-        component:fillRenewalDetail
-      },
+      }
     ]
   },
     

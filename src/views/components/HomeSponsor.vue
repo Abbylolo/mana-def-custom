@@ -1,34 +1,36 @@
 <template>
   <div id="building"> 
   </div>
-  <h1>首页&nbsp;/&nbsp;审核人</h1>
+  <h1>首页&nbsp;/&nbsp;申请人</h1>
   <el-table
     :data="tableData"
     border
     style="width: 100%"
     :header-cell-style="{fontSize:'16px'}"
     >
+    
     <el-table-column
-      prop="reviewerId"
+      prop="sponsorId"
       label="ID"
       width="180"
       align="center"
       >
     </el-table-column>
     <el-table-column
-      prop="reviewerName"
+      prop="sponsorName"
       label="姓名"
       width="180">
     </el-table-column>
     <el-table-column
-      prop="reviewerSex"
+      prop="sponsorSex"
       label="性别">
     </el-table-column>
     <el-table-column
-      prop="reviewerTel"
+      prop="sponsorTel"
       label="联系方式">
-    </el-table-column><el-table-column
-      prop="reviewerEmail"
+    </el-table-column>
+    <el-table-column
+      prop="sponsorEmail"
       label="邮箱">
     </el-table-column>
   </el-table>
@@ -36,18 +38,18 @@
 
 <script>
 export default {
-    name:'Home',
+    name:'HomeSponsor',
     data(){
       return{
         tableData:[]
       }
     },
     created(){
-        this.getReviewerData();
+        this.getSponsorData();
     },
     methods:{
-        getReviewerData(){
-            this.$api.get('/reviewer/queryAll',{
+        getSponsorData(){
+            this.$api.get('/sponsor/queryAll',{
                 }).then( res =>{
                     this.tableData=res.data.data;
                     console.log(this.tableData)

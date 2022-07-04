@@ -9,19 +9,19 @@
                     <el-menu-item index="1">
                         <template #title>
                             <i class="el-icon-menu"></i>
-                            <router-link to="/home">首页</router-link>
+                            <router-link to="/home-sponsor">首页</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="2">
                         <template #title>
-                            <i class="el-icon-s-claim"></i>
-                            <router-link to="/review/defaultApplication">违约认定审核</router-link>
+                            <i class="el-icon-edit-outline"></i>
+                            <router-link to="/application/default">违约认定申请</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="3">
                         <template #title>
-                            <i class="el-icon-circle-check"></i>
-                            <router-link to="/review/defaultRenewalApplication">违约重生审核</router-link>
+                            <i class="el-icon-document-checked"></i>
+                            <router-link to="/application/defaultRenewal">违约重生申请</router-link>
                         </template>
                     </el-menu-item>
                     <el-menu-item index="4">
@@ -34,12 +34,6 @@
                         <template #title>
                             <i class="el-icon-pie-chart"></i>
                             <router-link to="/statistics">违约统计</router-link>
-                        </template>
-                    </el-menu-item>
-                    <el-menu-item index="6">
-                        <template #title>
-                            <i class="el-icon-s-tools"></i>
-                            <router-link to="/reasons">违约风险原因维护</router-link>
                         </template>
                     </el-menu-item>
                 </el-menu>
@@ -60,7 +54,7 @@
 
 <script>
     export default{
-        name: 'index',
+        name: 'indexSponsor',
         data(){
             return{
                 loginName:''
@@ -71,9 +65,9 @@
         },
         methods: {
             checkIdentity(){
-                this.$api.get('/reviewer/queryAll',{
+                this.$api.get('/sponsor/queryAll',{
                 }).then( res =>{
-                    this.loginName=res.data.data[0].reviewerName
+                    this.loginName=res.data.data[0].sponsorName
                 })
             }
         }

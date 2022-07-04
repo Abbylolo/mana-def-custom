@@ -83,7 +83,7 @@ export default {
           }).then(res => {
             console.log(res)
             if (res.data.data !== null) {
-              this.$router.push('/index')
+              this.$router.push('/home-sponsor')
             } else {
               ElMessage({
                 showClose: true,
@@ -98,7 +98,7 @@ export default {
             reviewerPwd: this.password
           }).then(res => {
             if (res.data.data !== null) {
-              this.$router.push('/index')
+              this.$router.push('/home')
             } else {
               ElMessage({
                 showClose: true,

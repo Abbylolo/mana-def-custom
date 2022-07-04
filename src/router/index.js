@@ -5,6 +5,7 @@ import Home from '../views/components/Home'
 import DefaultApplication from '../views/application/DefaultApplication'
 import DefaultRenewalApplication from '../views/application/DefaultRenewalApplication'
 import DataSearch from '../views/search/DataSearch'
+import DataSearchSponsor from '../views/search/DataSearchSponsor'
 import DefaultStatistics from '../views/search/DefaultStatistics'
 import DefaultApplicationReview from '../views/review/DefaultApplicationReview'
 import DefaultRenewalApplicationReview from '../views/review/DefaultRenewalApplicationReview'
@@ -41,9 +42,9 @@ const routes = [
         component: DefaultRenewalApplication
       },
       {
-        path:'/dataSearch',
-        name:'DataSearch',
-        component: DataSearch
+        path:'/dataSearchSponsor',
+        name:'DataSearchSponsor',
+        component: DataSearchSponsor
       },
       {
         path:'/application/default/fill',

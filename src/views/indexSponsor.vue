@@ -27,13 +27,7 @@
                     <el-menu-item index="4">
                         <template #title>
                             <i class="el-icon-search"></i>
-                            <router-link to="/dataSearch">违约信息查询</router-link>
-                        </template>
-                    </el-menu-item>
-                    <el-menu-item index="5">
-                        <template #title>
-                            <i class="el-icon-pie-chart"></i>
-                            <router-link to="/statistics">违约统计</router-link>
+                            <router-link to="/dataSearchSponsor">违约信息查询</router-link>
                         </template>
                     </el-menu-item>
                 </el-menu>

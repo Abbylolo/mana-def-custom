@@ -13,7 +13,8 @@
     </el-descriptions>
     <br />
     <el-descriptions title="违约原因详情" direction="vertical" :column="1">
-      <el-descriptions-item v-for="(item,index) in defaultReason" :key="index">{{ index+1+'.'+item }}</el-descriptions-item>
+      <el-descriptions-item v-for="(item, index) in defaultReason" :key="index">{{ index + 1 + '.' + item }}
+      </el-descriptions-item>
     </el-descriptions>
     <template v-slot:footer>
       <div class="dialog-footer">
@@ -25,7 +26,7 @@
 </template>
 <script>
 export default {
-  name: 'Dialog',
+  name: 'RenewalDialog',
   data () {
     return {
       // 编辑弹窗是否显示

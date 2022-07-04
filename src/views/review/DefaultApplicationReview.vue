@@ -15,7 +15,7 @@
             <el-col :span="7">
               <el-form-item>
                 <el-select v-model="form.defaultState" placeholder="审核状态">
-                  <el-option v-for="item in reviewOptions" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="(item,index) in reviewOptions" :key="index" :label="item" :value="index">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -35,15 +35,15 @@
           :empty-text="querydata == true ? '点击按钮查询' : '暂无数据'">
           <el-table-column prop="clientName" label="客户姓名" :show-overflow-tooltip="true" fixed />
           <el-table-column prop="defaultState" label="审核状态" width="100" fixed />
-          <el-table-column prop="defaultId" label="违约记录编号" width="150" />
-          <el-table-column prop="clientSex" label="性别" width="150" />
-          <el-table-column prop="clientIdCard" label="身份证号" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="clientTel" label="电话号码" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="clientEmail" label="邮箱" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="clientRete" label="最新外部等级" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="clientCreated" label="创建时间" width="140" show-overflow-tooltip />
-          <el-table-column prop="clientState" label="客户状态" width="140" show-overflow-tooltip />
-          <el-table-column label="操作" width="100" fixed="right">
+          <el-table-column prop="clientId" label="客户编号" width="150" />
+          <el-table-column prop="sponsorId" label="申请人编号" width="150" />
+          <el-table-column prop="sponsorName" label="申请人名字" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultRemark" label="备注" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultCreated" label="创建时间" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultReviewed" label="审核时间" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultSeverity" label="违约严重性" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultReason" label="违约原因" width="100" :show-overflow-tooltip="true" />
+          <el-table-column label="操作" width="100" fixed="right" >
             <template v-slot="scope">
               <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
             </template>
@@ -72,34 +72,9 @@ export default {
       loading: false,
       // 初始显示
       querydata: true,
-      severityOptions: [
-        {
-          value: 0,
-          label: '低'
-        },
-        {
-          value: 1,
-          label: '中'
-        },
-        {
-          value: 2,
-          label: '高'
-        }
-      ],
-      reviewOptions: [
-        {
-          value: 0,
-          label: '未审核'
-        },
-        {
-          value: 1,
-          label: '审核通过'
-        },
-        {
-          value: 2,
-          label: '审核不通过'
-        }
-      ],
+      // 违约严重性
+      severityOptions: ['低', '中', '高'],
+      reviewOptions: ['未审核', '同意', '拒绝'],
       reteOptions: [
         {
           value: 0,
@@ -139,6 +114,7 @@ export default {
   },
   methods: {
     diaglogSet (p) {
+      this.searchTableData()
       this.$nextTick(() => {
         this.dialogFormVisible = p
       })
@@ -162,7 +138,7 @@ export default {
           sponsorId: '',
           sponsorName: '',
           defaultState: '' || this.form.defaultState,
-          defaultRete: '',
+          clientRete: '',
           defaultSeverity: '',
           defaultNotch: '',
           defaultCancel: '',
@@ -170,16 +146,48 @@ export default {
           defaultRelate: '',
           defaultSubstitute: '',
           defaultBankrupt: '',
-          defaultExternal: '',
           startCreated: '',
           endCreated: '',
           startReviewed: '',
-          endReviewed: ''
+          endReviewed: '',
+          defaultExternal: ''
         }
       }).then(res => {
         console.log(res)
         if (res.data.code === 200) {
           this.tableData = res.data.data
+          let i = 0
+          res.data.data.forEach(item => {
+            this.tableData[i].defaultCreated = item.defaultCreated.substring(0, 10)
+            this.tableData[i].defaultReviewed = item.defaultReviewed.substring(0, 10)
+            this.tableData[i].defaultState = this.reviewOptions[item.defaultState]
+            this.tableData[i].defaultSeverity = this.severityOptions[item.defaultSeverity]
+            let reason = ''
+            if (this.tableData[i].defaultNotch === '1') {
+              reason += '0'
+            }
+            if (this.tableData[i].defaultCancel === '1') {
+              reason += '1'
+            }
+            if (this.tableData[i].defaultDelay === '1') {
+              reason += '2'
+            }
+            if (this.tableData[i].defaultRelate === '1') {
+              reason += '3'
+            }
+            if (this.tableData[i].defaultSubstitute === '1') {
+              reason += '4'
+            }
+            if (this.tableData[i].defaultBankrupt === '1') {
+              reason += '5'
+            }
+            if (this.tableData[i].defaultExternal === '1') {
+              reason += '6'
+            }
+            this.tableData[i].defaultReason = reason
+            i++
+          })
+          // console.log(res.data.data.defaultCreated)
           this.$forceUpdate()
         } else {
           ElMessage({
@@ -193,24 +201,19 @@ export default {
     // 重置
     resetForm () {
       this.form = {
-        clientId: '',
-        defaultId: '',
         clientName: '',
         defaultState: '',
-        sponsorName: '',
-        defaultRete: '',
-        defaultCreated: '',
-        defaultReviewed: '',
-        defaultSeverity: '',
         pageNum: 1,
         pageSize: 10
       }
-      this.$refs.dateTimeRange.clear()
     },
     handleSizeChange () {
       // ...
     },
     handleCurrentChange () {}
+  },
+  mounted () {
+    this.searchTableData()
   }
 }
 </script>

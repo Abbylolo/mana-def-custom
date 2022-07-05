@@ -153,7 +153,8 @@ export default {
           endCreated: '',
           startReviewed: '',
           endReviewed: '',
-          defaultExternal: ''
+          defaultExternal: '',
+          applyState: ''
         }
       }).then(res => {
         console.log(res)

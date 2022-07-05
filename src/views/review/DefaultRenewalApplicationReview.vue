@@ -138,7 +138,9 @@ export default {
           rebirthPay: '',
           rebirthRepay: '',
           startCreated: '',
-          endCreated: ''
+          endCreated: '',
+          applyState: '',
+          defaultState: ''
         }
       }).then(res => {
         console.log(res)

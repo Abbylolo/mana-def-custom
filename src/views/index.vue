@@ -60,10 +60,10 @@
             </el-aside>
             <el-container>
                 <el-header style="text-align: right; font-size: 12px">
-                    <img src="../assets/pics/man.png"
+                    <img src="../assets/pics/woman.png"
                         style="margin-right: 10px;height:40px;float:left;margin-top: 20px;" />
                     <span style="margin-right: 10px;font-size: 16px;float:left;">{{loginName}}</span>
-                    <router-link to=" /"
+                    <router-link to="/"
                         style="margin-right: 10px;text-decoration: none;color: #658dfb;font-size: 16px;">退出登录
                     </router-link>
                     <i class="el-icon-setting" style="margin-right: 10px;width:16px"></i>

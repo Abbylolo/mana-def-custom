@@ -33,15 +33,15 @@
 
       <div class="table_zone">
         <el-table v-loading="loading" :data="tableData" style="width: 100%" :empty-text="querydata == true ? '' : ''">
-          <el-table-column prop="clientName" label="违约客户" :show-overflow-tooltip="true" fixed />
+          <el-table-column prop="clientName" label="违约客户" width="100" :show-overflow-tooltip="true" fixed />
           <el-table-column prop="rebirthState" label="审核状态" width="100" fixed />
           <el-table-column prop="clientId" label="客户编号" width="150" />
           <el-table-column prop="sponsorName" label="认定人" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="sponsorId" label="认定人编号" width="100" />
-          <el-table-column prop="defaultCreated" label="认定申请时间" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="rebirthCreated" label="重生申请时间" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="sponsorId" label="认定人编号" width="160" />
+          <el-table-column prop="defaultCreated" label="认定申请时间" width="160" :show-overflow-tooltip="true" />
+          <el-table-column prop="rebirthCreated" label="重生申请时间" width="160" :show-overflow-tooltip="true" />
           <el-table-column prop="defaultSeverity" label="严重程度" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="clientRete" label="最新外部等级信息" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientRete" label="最新外部等级信息" width="150" :show-overflow-tooltip="true" />
           <el-table-column label="操作" width="100" fixed="right">
             <template v-slot="scope">
               <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
@@ -77,16 +77,7 @@ export default {
       // 违约严重性
       severityOptions: ['低', '中', '高'],
       reviewOptions: ['未审核', '同意', '拒绝'],
-      reteOptions: [
-        {
-          value: 0,
-          label: '不违约'
-        },
-        {
-          value: 1,
-          label: '违约'
-        }
-      ],
+      reteOptions: ['不违约', '违约'],
       sponsorOptions: [
         {
           value: 0,
@@ -166,6 +157,7 @@ export default {
             if (item.defaultSeverity !== undefined) {
               this.tableData[i].defaultSeverity = this.severityOptions[item.defaultSeverity]
             }
+            this.tableData[i].clientRete = this.reteOptions[item.clientRete]
 
             // 违约原因数据重组
             let reason = ''

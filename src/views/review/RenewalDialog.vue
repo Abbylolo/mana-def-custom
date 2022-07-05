@@ -1,19 +1,24 @@
 <template>
-  <el-dialog title="违约认定审核" v-model="dialogFormVisible" width="90%" destroy-on-close="true">
+  <el-dialog title="违约重生审核" v-model="dialogFormVisible" width="90%" destroy-on-close="true">
     <el-descriptions title="基本信息">
       <el-descriptions-item label="客户姓名：">{{ row.clientName }}</el-descriptions-item>
-      <el-descriptions-item label="审核状态：">{{ row.defaultState }}</el-descriptions-item>
+      <el-descriptions-item label="审核状态：">{{ row.rebirthState }}</el-descriptions-item>
       <el-descriptions-item label="违约记录编号：">{{ row.defaultId }}</el-descriptions-item>
       <el-descriptions-item label="客户编号：">{{ row.clientId }}</el-descriptions-item>
       <el-descriptions-item label="严重程度：">{{ row.defaultSeverity }}</el-descriptions-item>
       <el-descriptions-item label="认定人：">{{ row.sponsorName }}</el-descriptions-item>
       <!-- <el-descriptions-item label="最新外部等级：">{{ row.defaultRete }}</el-descriptions-item> -->
       <el-descriptions-item label="认定申请时间：">{{ row.defaultCreated }}</el-descriptions-item>
-      <el-descriptions-item label="认定审核时间：">{{ row.defaultReviewed }}</el-descriptions-item>
+      <el-descriptions-item label="重生申请时间：">{{ row.rebirthCreated }}</el-descriptions-item>
     </el-descriptions>
     <br />
     <el-descriptions title="违约原因详情" direction="vertical" :column="1">
       <el-descriptions-item v-for="(item, index) in defaultReason" :key="index">{{ index + 1 + '.' + item }}
+      </el-descriptions-item>
+    </el-descriptions>
+    <br />
+    <el-descriptions title="重生原因详情" direction="vertical" :column="1">
+      <el-descriptions-item v-for="(item, index) in RenewalReason" :key="index">{{ index + 1 + '.' + item }}
       </el-descriptions-item>
     </el-descriptions>
     <template v-slot:footer>
@@ -41,7 +46,16 @@ export default {
         '申请破产保护，发生法律接管，或者处于类似的破产保护状态',
         '在其他金融机构违约（包括不限于：人行征信记录中显示贷款分类状态不良类情况，逾期超过 90 天等），或外部评级显示为违约级别'
       ],
-      defaultReason: []
+      defaultReason: [],
+      allRenewalReason: [
+        '正常结算后解除',
+        '在其他金融机构违约解除，或外部评级显示为非违约级别',
+        '计提比例小于设置界限',
+        '连续 12 个月内按时支付本金和利息',
+        '客户的还款意愿和还款能力明显好转，已偿付各项逾期本金、逾期利息和其他费用（包括罚息等），且连续 12 个月内按时支付本金、利息',
+        '导致违约的关联集团内其他发生违约的客户已经违约重生，解除关联成员的违约设定'
+      ],
+      RenewalReason: []
     }
   },
   methods: {
@@ -49,15 +63,19 @@ export default {
       console.log('dd')
       this.dialogFormVisible = p.dialogFormVisible
       this.row = p.row
-      const r = this.row.defaultReason.split('')
-      r.forEach(item => {
+      const rId = this.row.defaultReason.split('')
+      rId.forEach(item => {
         this.defaultReason.push(this.allDefaultReason[item])
+      })
+      const renewalId = this.row.renewalReason.split('')
+      renewalId.forEach(item => {
+        this.RenewalReason.push(this.allRenewalReason[item])
       })
     },
     rejected () {
       this.dialogFormVisible = false
-      this.$api.post('default/updateDefalutStateToFail?defaultId=' + this.row.defaultId, {
-        defaultId: this.row.defaultId
+      this.$api.post('rebirth/updateRebirthStateToFail?rebirthId=' + this.row.rebirthId, {
+        rebirthId: this.row.rebirthId
       })
       this.defaultReason = ''
       this.$nextTick(() => {
@@ -66,8 +84,8 @@ export default {
     },
     passed () {
       this.dialogFormVisible = false
-      this.$api.post('default/updateDefalutStateToPass?defaultId=' + this.row.defaultId, {
-        defaultId: this.row.defaultId
+      this.$api.post('updateRebirthStateToPass?rebirthId=' + this.row.rebirthId, {
+        rebirthId: this.row.rebirthId
       })
       this.defaultReason = ''
       this.$nextTick(() => {

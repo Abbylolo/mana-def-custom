@@ -1,5 +1,4 @@
 <template>
-  <h1>违约统计</h1>
   <h3>区域统计(违约主体个数)</h3>
   <AreaStatistics></AreaStatistics>
   <h3>区域统计(违约重生主体个数)</h3>

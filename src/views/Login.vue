@@ -77,7 +77,7 @@ export default {
         })
       } else {
         if (this.role === 'sponsor') {
-          this.$api.post('sponsor/login?sponsorPwd=' + this.password + '&sponsorTel=' + this.phoneNumber, {
+          this.$api.post('sponsor/login', {
             sponsorTel: this.phoneNumber.toString(),
             sponsorPwd: this.password
           }).then(res => {
@@ -93,7 +93,7 @@ export default {
             }
           })
         } else {
-          this.$api.post('reviewer/login?reviewerPwd=' + this.password + '&reviewerTel=' + this.phoneNumber, {
+          this.$api.post('reviewer/login', {
             reviewerTel: this.phoneNumber.toString(),
             reviewerPwd: this.password
           }).then(res => {

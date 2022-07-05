@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>违约重生审核</h1>
-    <RenewalDialog ref="submitDialog" @setReject="diaglogSet " @setPass="diaglogSet" @close="dialogFormVisible = false"></RenewalDialog>
+    <RenewalDialog ref="submitDialog" @setReject="diaglogSet " @setPass="diaglogSet" @close="dialogFormVisible = false">
+    </RenewalDialog>
     <div class="content" v-show="!dialogFormVisible">
       <div class="search_zone">
         <!-- <h4 class="layout-small-title">自定义搜索</h4> -->
@@ -14,7 +15,7 @@
             </el-col>
             <el-col :span="7">
               <el-form-item>
-                <el-select v-model="form.defaultState" placeholder="审核状态">
+                <el-select v-model="form.rebirthState" placeholder="审核状态">
                   <el-option v-for="(item, index) in reviewOptions" :key="index" :label="item" :value="index">
                   </el-option>
                 </el-select>
@@ -31,18 +32,16 @@
       </div>
 
       <div class="table_zone">
-        <el-table v-loading="loading" :data="tableData" style="width: 100%"
-          :empty-text="querydata == true ? '点击按钮查询' : '暂无数据'">
-          <el-table-column prop="clientName" label="客户姓名" :show-overflow-tooltip="true" fixed />
-          <el-table-column prop="defaultState" label="审核状态" width="100" fixed />
+        <el-table v-loading="loading" :data="tableData" style="width: 100%" :empty-text="querydata == true ? '' : ''">
+          <el-table-column prop="clientName" label="违约客户" :show-overflow-tooltip="true" fixed />
+          <el-table-column prop="rebirthState" label="审核状态" width="100" fixed />
           <el-table-column prop="clientId" label="客户编号" width="150" />
-          <el-table-column prop="sponsorId" label="申请人编号" width="150" />
-          <el-table-column prop="sponsorName" label="申请人名字" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultRemark" label="备注" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultCreated" label="创建时间" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultReviewed" label="审核时间" width="140" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultSeverity" label="违约严重性" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultReason" label="违约原因" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="sponsorName" label="认定人" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="sponsorId" label="认定人编号" width="100" />
+          <el-table-column prop="defaultCreated" label="认定申请时间" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="rebirthCreated" label="重生申请时间" width="140" :show-overflow-tooltip="true" />
+          <el-table-column prop="defaultSeverity" label="严重程度" width="100" :show-overflow-tooltip="true" />
+          <el-table-column prop="clientRete" label="最新外部等级信息" width="100" :show-overflow-tooltip="true" />
           <el-table-column label="操作" width="100" fixed="right">
             <template v-slot="scope">
               <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
@@ -53,6 +52,9 @@
           <el-pagination background :current-page="form.pageNum" :page-sizes="pageSizes" :page-size="form.pageSize"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
+        </div>
+        <div v-else>
+          <el-empty :image-size="300" description=" "></el-empty>
         </div>
       </div>
     </div>
@@ -97,7 +99,7 @@ export default {
       ],
       form: {
         clientName: '',
-        defaultState: '',
+        rebirthState: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -130,27 +132,21 @@ export default {
     },
     // 查询
     searchTableData () {
-      this.$api.get('default/queryDefault', {
+      this.$api.get('rebirth/queryRebirth', {
         params: {
+          rebirthId: '',
           defaultId: '',
-          clientId: '',
           clientName: '' || this.form.clientName,
-          sponsorId: '',
-          sponsorName: '',
-          defaultState: '' || this.form.defaultState,
-          clientRete: '',
-          defaultSeverity: '',
-          defaultNotch: '',
-          defaultCancel: '',
-          defaultDelay: '',
-          defaultRelate: '',
-          defaultSubstitute: '',
-          defaultBankrupt: '',
+          rebirthState: '' || this.form.rebirthState,
+          rebirthRemark: '',
+          rebirthRelieve: '',
+          rebirthSettle: '',
+          rebirthChange: '',
+          rebirthReduce: '',
+          rebirthPay: '',
+          rebirthRepay: '',
           startCreated: '',
-          endCreated: '',
-          startReviewed: '',
-          endReviewed: '',
-          defaultExternal: ''
+          endCreated: ''
         }
       }).then(res => {
         console.log(res)
@@ -158,33 +154,65 @@ export default {
           this.tableData = res.data.data
           let i = 0
           res.data.data.forEach(item => {
-            this.tableData[i].defaultCreated = item.defaultCreated.substring(0, 10)
-            this.tableData[i].defaultReviewed = item.defaultReviewed.substring(0, 10)
-            this.tableData[i].defaultState = this.reviewOptions[item.defaultState]
-            this.tableData[i].defaultSeverity = this.severityOptions[item.defaultSeverity]
+            if (item.rebirthState !== undefined) {
+              this.tableData[i].rebirthState = this.reviewOptions[item.rebirthState]
+            }
+            if (item.defaultCreated !== undefined) {
+              this.tableData[i].defaultCreated = item.defaultCreated.substring(0, 10)
+            }
+            if (item.rebirthCreated !== undefined) {
+              this.tableData[i].rebirthCreated = item.rebirthCreated.substring(0, 10)
+            }
+            if (item.defaultSeverity !== undefined) {
+              this.tableData[i].defaultSeverity = this.severityOptions[item.defaultSeverity]
+            }
+
+            // 违约原因数据重组
             let reason = ''
             if (this.tableData[i].defaultNotch === '1') {
-              reason += '0'
-            }
-            if (this.tableData[i].defaultCancel === '1') {
               reason += '1'
             }
-            if (this.tableData[i].defaultDelay === '1') {
+            if (this.tableData[i].defaultCancel === '1') {
               reason += '2'
             }
-            if (this.tableData[i].defaultRelate === '1') {
+            if (this.tableData[i].defaultDelay === '1') {
               reason += '3'
             }
-            if (this.tableData[i].defaultSubstitute === '1') {
+            if (this.tableData[i].defaultRelate === '1') {
               reason += '4'
             }
-            if (this.tableData[i].defaultBankrupt === '1') {
+            if (this.tableData[i].defaultSubstitute === '1') {
               reason += '5'
             }
-            if (this.tableData[i].defaultExternal === '1') {
+            if (this.tableData[i].defaultBankrupt === '1') {
               reason += '6'
             }
+            if (this.tableData[i].defaultExternal === '1') {
+              reason += '7'
+            }
             this.tableData[i].defaultReason = reason
+
+            // 重生原因重组
+            let renewalReason = ''
+            if (this.tableData[i].rebirthSettle === '1') {
+              renewalReason += '1'
+            }
+            if (this.tableData[i].rebirthChange === '1') {
+              renewalReason += '2'
+            }
+            if (this.tableData[i].rebirthReduce === '1') {
+              renewalReason += '3'
+            }
+            if (this.tableData[i].rebirthPay === '1') {
+              renewalReason += '4'
+            }
+            if (this.tableData[i].rebirthRepay === '1') {
+              renewalReason += '5'
+            }
+            if (this.tableData[i].rebirthRelieve === '1') {
+              renewalReason += '6'
+            }
+            this.tableData[i].renewalReason = renewalReason
             i++
           })
           // console.log(res.data.data.defaultCreated)

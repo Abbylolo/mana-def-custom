@@ -42,8 +42,7 @@
           <el-table-column prop="defaultCreated" label="创建时间" width="140" :show-overflow-tooltip="true" />
           <el-table-column prop="defaultReviewed" label="审核时间" width="140" :show-overflow-tooltip="true" />
           <el-table-column prop="defaultSeverity" label="违约严重性" width="100" :show-overflow-tooltip="true" />
-          <el-table-column prop="defaultReason" label="违约原因" width="100" :show-overflow-tooltip="true" />
-          <el-table-column label="操作" width="100" fixed="right" >
+          <el-table-column label="操作" width="100" fixed="right">
             <template v-slot="scope">
               <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
             </template>
@@ -53,6 +52,9 @@
           <el-pagination background :current-page="form.pageNum" :page-sizes="pageSizes" :page-size="form.pageSize"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
+        </div>
+        <div v-else>
+          <el-empty :image-size="300" description=" "></el-empty>
         </div>
       </div>
     </div>
@@ -164,25 +166,25 @@ export default {
             this.tableData[i].defaultSeverity = this.severityOptions[item.defaultSeverity]
             let reason = ''
             if (this.tableData[i].defaultNotch === '1') {
-              reason += '0'
-            }
-            if (this.tableData[i].defaultCancel === '1') {
               reason += '1'
             }
-            if (this.tableData[i].defaultDelay === '1') {
+            if (this.tableData[i].defaultCancel === '1') {
               reason += '2'
             }
-            if (this.tableData[i].defaultRelate === '1') {
+            if (this.tableData[i].defaultDelay === '1') {
               reason += '3'
             }
-            if (this.tableData[i].defaultSubstitute === '1') {
+            if (this.tableData[i].defaultRelate === '1') {
               reason += '4'
             }
-            if (this.tableData[i].defaultBankrupt === '1') {
+            if (this.tableData[i].defaultSubstitute === '1') {
               reason += '5'
             }
-            if (this.tableData[i].defaultExternal === '1') {
+            if (this.tableData[i].defaultBankrupt === '1') {
               reason += '6'
+            }
+            if (this.tableData[i].defaultExternal === '1') {
+              reason += '7'
             }
             this.tableData[i].defaultReason = reason
             i++

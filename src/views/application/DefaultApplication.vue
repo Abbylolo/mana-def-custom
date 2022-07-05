@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1>违约认定申请</h1>
+    <h1 v-show="!dialogFormVisible">违约认定申请</h1>
   </div>
-  <div class="content">
+  <fill-detail ref="submitDialog" @close="dialogFormVisible=false" @refresh="searchTableData"></fill-detail>
+  <div class="content" v-show="!dialogFormVisible">
     <div class="search_zone">
-      <!-- <h4 class="layout-small-title">自定义搜索</h4> -->
       <el-form ref="searchForm" :model="form">
         <el-row>
           <el-col :span="7">
@@ -178,11 +178,11 @@
           prop="clientState"
           label="违约状态"
           :show-overflow-tooltip="true"
+          v-if="false"
         />
         <el-table-column label="操作" width="100">
           <template v-slot="scope">
-            <el-button type="text" size="mini" @click="checkDetail(scope.row)">查看</el-button>
-            <el-button type="text" size="mini" @click="submitDetail(scope.row)">申请</el-button>
+            <el-button type="text" size="mini" @click="checkDetail(scope.row)">申请</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -200,12 +200,17 @@
 </template>
 
 <script>
+import fillDetail from './components/fillDetail'
     export default {
       name:'DefaultApplication',
+      components:{
+        fillDetail
+      }, 
       data() {
         return {
           loading: false,
           ifSubmit:true,
+          dialogFormVisible:false,
           //初始显示
           querydata:true,
           sexOptions:[
@@ -221,21 +226,21 @@
           rateOptions:[
             {
               label:'未违约',
-              value:0
+              value:'0'
             },
             {
               label:'违约',
-              value:1
+              value:'1'
             },
           ],
           stateOptions:[
             {
               label:'未违约',
-              value:0
+              value:'0'
             },
             {
               label:'违约',
-              value:1
+              value:'1'
             },
           ],
           form: {
@@ -318,24 +323,22 @@
       methods:{
         searchTableData(){
           this.loading = true;
-          // 组装数据 将日期加到 form 中
-          //this.form.params.beginTime = this.form.ksrq;
-          //this.form.params.endTime = this.form.jsrq;
           // 数据初始化
           this.tableData = [];
           this.total = 0;
           this.$api.get('/client/queryClient',{
             params:{
-              clientId: this.form.clientId,
-              clientName: this.form.clientName,
-              clientSex: this.form.clientSex,
-              clientIdCard: this.form.clientIdCard,
-              clientTel: this.form.clientTel,
-              clientEmail: this.form.clientEmail,
-              clientRete: this.form.clientRete,
-              clientState: this.form.clientState,
-              startTime: this.form.startTime,
-              endTime: this.form.endTime
+              clientId:'' || this.form.clientId,
+              clientName: '' || this.form.clientName,
+              clientSex:'' || this.form.clientSex,
+              clientIdCard: '' || this.form.clientIdCard,
+              clientTel: '' || this.form.clientTel,
+              clientEmail: '' || this.form.clientEmail,
+              clientRete: '' || this.form.clientRete,
+              clientState: '0',
+              startTime: '' || this.form.startTime,
+              endTime: '' || this.form.endTime,
+              applyState: '0'
             }
           }).then(res => {
               //res.rows.forEach(item => {
@@ -350,11 +353,9 @@
               this.tableData = res.data.data;
               this.tableData.map(item=>{
                 if(item.clientRete=='0'){
-                  item.clientRete='低';
+                  item.clientRete='未违约';
                 }else if(item.clientRete=='1'){
-                  item.clientRete='中';
-                }else{
-                  item.clientRete='高';
+                  item.clientRete='违约';
                 }
                 item.clientCreated=item.clientCreated.slice(0,10);
               })
@@ -399,6 +400,20 @@
               //sortOrder: "desc"
             //}
           };
+        },
+         diaglogSet (p) {
+          this.$nextTick(() => {
+            this.dialogFormVisible = p
+          })
+        },
+        // 弹出编辑弹窗
+        checkDetail (row) {
+          console.log(row)
+          this.dialogFormVisible = true
+          const p = []
+          p.dialogFormVisible = this.dialogFormVisible
+          p.row = row
+          this.$refs.submitDialog.setProp(p)
         },
       }
     }

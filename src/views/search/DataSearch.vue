@@ -400,9 +400,9 @@ export default {
                   if(item.defaultState=='0'){
                     item.defaultState='未审核';
                   }else if(item.defaultState=='1'){
-                    item.defaultState='审核通过';
+                    item.defaultState='通过';
                   }else if(item.defaultState=='2'){
-                    item.defaultState='审核未通过';
+                    item.defaultState='拒绝';
                   }
                 })
                 this.loading = false;

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1>违约重生申请</h1>
+    <h1 v-show="!dialogFormVisible">违约重生申请</h1>
   </div>
-  <div class="content">
+  <fill-renewal-detail ref="submitDialog" @close="dialogFormVisible=false" @refresh="searchTableData"></fill-renewal-detail>
+  <div class="content" v-show="!dialogFormVisible">
     <div class="search_zone">
-      <!-- <h4 class="layout-small-title">自定义搜索</h4> -->
       <el-form ref="searchForm" :model="form">
         <el-row>
           <el-col :span="7">
@@ -41,18 +41,6 @@
             <el-button type="primary" @click="searchTableData">查&nbsp;询</el-button>
           </el-col>
           <el-col :span="7">
-            <el-form-item>
-              <el-select v-model="form.defaultState" placeholder="审核状态">
-                <el-option
-                  v-for="item in reviewOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
             <el-form-item >
               <el-select v-model="form.defaultSeverity" placeholder="严重程度">
                 <el-option
@@ -74,24 +62,22 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="7">
+            <el-form-item>
+              <el-input
+                v-model="form.sponsorName"
+                placeholder="认定人"
+                clearable
+                @keyup.enter="searchTableData"
+              />
+            </el-form-item>
+          </el-col>
           <el-col :span="1">
             <el-button @click="resetForm">重&nbsp;置</el-button>
           </el-col>
           <el-col :span="7">
-            <el-form-item>
-              <el-select v-model="form.sponsorName" placeholder="认定人">
-                <el-option
-                  v-for="item in sponsorOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item>
-              <el-select v-model="form.defaultRete" placeholder="最新外部等级">
+            <el-form-item >
+              <el-select v-model="form.clientRete" placeholder="最新外部等级">
                 <el-option
                   v-for="item in reteOptions"
                   :key="item.value"
@@ -227,7 +213,7 @@
           width="140"
           :show-overflow-tooltip="true"
         />
-        <el-table-column prop="defaultRete" label="最新外部等级" width="100" :show-overflow-tooltip="true"/>
+        <el-table-column prop="clientRete" label="最新外部等级" width="100" :show-overflow-tooltip="true"/>
         <el-table-column
           prop="defaultCreated"
           label="认定申请时间"
@@ -250,11 +236,8 @@
         <el-pagination
           background
           :current-page="form.pageNum"
-          :page-sizes="pageSizes"
-          :page-size="form.pageSize"
           layout="total, prev, pager, next"
           :total="total"
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
       </div>
@@ -263,59 +246,40 @@
 </template>
 
 <script>
+import fillRenewalDetail from './components/fillRenewalDetail'
     export default {
         name:'DefaultRenewalApplication',
+        components:{
+          fillRenewalDetail
+        },
         data() {
           return {
             loading: false,
+            dialogFormVisible:false,
             //初始显示
             querydata:true,
             severityOptions:[
               {
-                value: 0,
+                value: '0',
                 label: '低'
               },
               {
-                value: 1,
+                value: '1',
                 label: '中'
               },
               {
-                value: 2,
+                value: '2',
                 label: '高'
-              },
-            ],
-            reviewOptions:[
-              {
-                value: 0,
-                label: '未审核'
-              },
-              {
-                value: 1,
-                label: '审核通过'
-              },
-              {
-                value: 2,
-                label: '审核不通过'
               },
             ],
             reteOptions:[
               {
-                value: 0,
-                label: '不违约'
+                value: '0',
+                label: '未违约'
               },
               {
-                value: 1,
+                value: '1',
                 label: '违约'
-              }
-            ],
-            sponsorOptions:[
-              {
-                value: 0,
-                label: '申请人'
-              },
-              {
-                value: 1,
-                label: '审核人'
               }
             ],
             form: {
@@ -326,7 +290,7 @@
               defaultState:'',
               sponsorId:'',
               sponsorName:'',
-              defaultRete:'',
+              clientRete:'',
               defaultCreated:'',
               defaultReviewed:'',
               defaultSeverity:'',
@@ -379,50 +343,60 @@
         methods:{
           searchTableData(){
             this.loading = true;
-            // 组装数据 将日期加到 form 中
-            //this.form.params.beginTime = this.form.ksrq;
-            //this.form.params.endTime = this.form.jsrq;
             // 数据初始化
             this.tableData = [];
             this.total = 0;
-            this.$api.get('/default/queryDefault',{
+            this.$api.get('default/queryDefault',{
               params:{
-                defaultId: this.form.defaultId,
-                clientId: this.form.clientId,
-                clientName: this.form.clientName,
-                sponsorId: this.form.sponsorId,
-                sponsorName: this.form.sponsorName,
-                defaultState: this.form.defaultState,
-                defaultSeverity: this.form.defaultSeverity,
-                defaultNotch: this.form.defaultNotch,
-                defaultCancel: this.form.defaultCancel,
-                defaultDelay: this.form.defaultDelay,
-                defaultRelate: this.form.defaultRelate,
-                defaultSubstitute: this.form.defaultSubstitute,
-                defaultBankrupt: this.form.defaultBankrupt,
-                defaultExternal: this.form.defaultExternal,
-                startCreated: this.form.startCreated,
-                endCreated: this.form.endCreated,
-                startReviewed: this.form.startReviewed,
-                endReviewed: this.form.endReviewed
+                defaultId: '' || this.form.defaultId,
+                clientId: '' || this.form.clientId,
+                clientName: '' || this.form.clientName,
+                sponsorId: '' || this.form.sponsorId,
+                sponsorName: '' || this.form.sponsorName,
+                defaultState: '1',
+                defaultSeverity: '' || this.form.defaultSeverity,
+                defaultNotch: '' || this.form.defaultNotch==true?'1':'',
+                defaultCancel: '' || this.form.defaultCancel==true?'1':'',
+                defaultDelay: '' || this.form.defaultDelay==true?'1':'',
+                defaultRelate:'' || this.form.defaultRelate==true?'1':'',
+                defaultSubstitute: '' || this.form.defaultSubstitute==true?'1':'',
+                defaultBankrupt: '' || this.form.defaultBankrupt==true?'1':'',
+                defaultExternal:'' || this.form.defaultExternal==true?'1':'',
+                startCreated: '' || this.form.startCreated,
+                endCreated:'' || this.form.endCreated,
+                startReviewed: '' || this.form.startReviewed,
+                endReviewed: '' || this.form.endReviewed,
+                clientRete:''|| this.form.clientRete,
+                defaultRemark:'' ,
+                applyState:'1'
               }
             }).then(res => {
-                //res.rows.forEach(item => {
-                //  let arr = item.cdxxtb.split("/");
-                //  if (arr[0] == arr[1]) {
-                //    item.cdxxtb = "全部已完成";
-                //  } else {
-                //    item.cdxxtb += "已完成";
-                //  }
-                //});
+              console.log(res.data)
                 this.total = res.data.data.length;
                 this.tableData = res.data.data;
                 this.tableData.map(item=>{
                   item.defaultCreated=item.defaultCreated.slice(0,10);
-                  item.defaultReview=item.defaultReviewed.slice(0,10);
+                  item.defaultReviewed=item.defaultReviewed.slice(0,10);
+                  if(item.defaultSeverity=='0'){
+                    item.defaultSeverity='低';
+                  }else if(item.defaultSeverity=='1'){
+                    item.defaultSeverity='中';
+                  }else if(item.defaultSeverity=='2'){
+                    item.defaultSeverity='高';
+                  }
+                  if(item.defaultState=='0'){
+                    item.defaultState='未审核';
+                  }else if(item.defaultState=='1'){
+                    item.defaultState='通过';
+                  }else if(item.defaultState=='2'){
+                    item.defaultState='拒绝';
+                  }
+                  if(item.clientRete=='0'){
+                    item.clientRete='未违约';
+                  }else if(item.clientRete=='1'){
+                    item.clientRete='违约';
+                  }
                 })
-                console.log('tableData')
-                console.log(this.tableData)
                 this.loading = false;
                 // console.log("----",this.tableData);
                 if(this.tableData.length == 0){
@@ -446,7 +420,7 @@
               defaultCreated:'',
               defaultReviewed:'',
               defaultSeverity:'',
-              defaultNotch: false,
+              defaultNotch:false,
               defaultCancel:false,
               defaultDelay:false,
               defaultRelate:false,
@@ -473,9 +447,22 @@
               //sortOrder: "desc"
             //}
           };
-          this.$refs.dateTimeRange.clear();
         },
-        }
+        diaglogSet (p) {
+          this.$nextTick(() => {
+            this.dialogFormVisible = p
+          })
+        },
+        // 弹出编辑弹窗
+        checkDetail (row) {
+          console.log(row)
+          this.dialogFormVisible = true
+          const p = []
+          p.dialogFormVisible = this.dialogFormVisible
+          p.row = row
+          this.$refs.submitDialog.setProp(p)
+        },
+      }
     }
 </script>
 

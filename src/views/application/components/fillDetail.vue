@@ -1,102 +1,57 @@
 <template>
-    <el-page-header @back="goBack" content="违约认定申请">
-    </el-page-header>
-    <div class="content">
+    <el-dialog title="违约认定申请" v-model="dialogFormVisible" width="90%" center :destroy-on-close="true" @close="close">
+        <el-descriptions title="基本信息">
+            <el-descriptions-item label="客户ID：">{{ row.clientId }}</el-descriptions-item>
+            <el-descriptions-item label="客户姓名：">{{ row.clientName }}</el-descriptions-item>
+            <el-descriptions-item label="最新外部等级：">{{ row.clientRete }}</el-descriptions-item>
+        </el-descriptions>
         <el-form
-            :model="ruleForm"
-            :rules="rules"
+            :model="row"
             ref="ruleForm"
             label-width="160px"
             label-position="top"
-            style="margin-top:40px;margin-left:40px;"
             >
             <el-row :gutter="60">
-                <el-col :span="7">
-                    <el-form-item label="客户id：" prop="clientId">
-                        <div>{{ruleForm.clientId}}</div>
-                        <input type="hidden" v-model="ruleForm.clientId"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="客户姓名：" prop="clientName">
-                        <div>{{ruleForm.clientName}}</div>
-                        <input type="hidden" v-model="ruleForm.clientName"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="性别：" prop="clientSex">
-                        <div>{{ruleForm.clientSex}}</div>
-                        <input type="hidden" v-model="ruleForm.clientSex"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="身份证号：" prop="clientIdCard">
-                        <div>{{ruleForm.clientIdCard}}</div>
-                        <input type="hidden" v-model="ruleForm.clientIdCard"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="联系方式：" prop="clientTel">
-                        <div>{{ruleForm.clientTel}}</div>
-                        <input type="hidden" v-model="ruleForm.clientTel"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="邮箱：" prop="clientEmail">
-                        <div>{{ruleForm.clientEmail}}</div>
-                        <input type="hidden" v-model="ruleForm.clientEmail"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="签约时间：" prop="clientCreated">
-                        <div>{{ruleForm.clientCreated}}</div>
-                        <input type="hidden" v-model="ruleForm.clientCreated"/>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="7">
-                    <el-form-item label="最新外部等级：" prop="clientRete">
-                        <div>{{ruleForm.clientRete}}</div>
-                        <input type="hidden" v-model="ruleForm.clientRete"/>
-                    </el-form-item>
-                </el-col>
+                <div class="container">
                 <el-col style="margin-top:20px">
-                    <el-form-item label="违约原因：" prop="defaultNotch">
-                        <el-checkbox v-model="ruleForm.defaultNotch">6个月内，交易对手技术性或资金等原因，给当天结算带来头寸缺口2次以上</el-checkbox>
+                    <el-form-item label="请选择违约原因：" prop="defaultNotch">
+                        <el-checkbox v-model="row.defaultNotch">6个月内，交易对手技术性或资金等原因，给当天结算带来头寸缺口2次以上</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultCancel">
-                        <el-checkbox v-model="ruleForm.defaultCancel">6个月内因各种原因导致成交后撤单2次以上</el-checkbox>
+                        <el-checkbox v-model="row.defaultCancel">6个月内因各种原因导致成交后撤单2次以上</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultDelay">
-                        <el-checkbox v-model="ruleForm.defaultDelay">未能按照合约规定支付或延期支付利息，本金或其他交付义务（不包括在宽限期内延期支付）</el-checkbox>
+                        <el-checkbox v-model="row.defaultDelay">未能按照合约规定支付或延期支付利息，本金或其他交付义务（不包括在宽限期内延期支付）</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultRelate">
-                        <el-checkbox v-model="ruleForm.defaultRelate">如果集团（内部联系较紧密的集团）或集团内任一公司（较重要的子公司，一旦发生违约会对整个集团造成较大影响的）发生违约，可视情况作为集团内所有成员违约的触发条件</el-checkbox>
+                        <el-checkbox v-model="row.defaultRelate">如果集团（内部联系较紧密的集团）或集团内任一公司（较重要的子公司，一旦发生违约会对整个集团造成较大影响的）发生违约，可视情况作为集团内所有成员违约的触发条件</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultSubstitute">
-                        <el-checkbox v-model="ruleForm.defaultSubstitute">发生消极债务置换：债务人提供给债权人新的或重组的债务，或新的证券组合、现金或资产低于原有金融义务；或为了债务人未来避免发生破产或拖欠还款而进行的展期或重组</el-checkbox>
+                        <el-checkbox v-model="row.defaultSubstitute">发生消极债务置换：债务人提供给债权人新的或重组的债务，或新的证券组合、现金或资产低于原有金融义务；或为了债务人未来避免发生破产或拖欠还款而进行的展期或重组</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultBankrupt">
-                        <el-checkbox v-model="ruleForm.defaultBankrupt">申请破产保护，发生法律接管，或者处于类似的破产保护状态</el-checkbox>
+                        <el-checkbox v-model="row.defaultBankrupt">申请破产保护，发生法律接管，或者处于类似的破产保护状态</el-checkbox>
                     </el-form-item>
                 </el-col>
                 <el-col>
                     <el-form-item prop="defaultExternal">
-                        <el-checkbox v-model="ruleForm.defaultExternal">在其他金融机构违约（包括不限于：人行征信记录中显示贷款分类状态不良类情况， 逾期超过 90 天等），或外部评级显示为违约级别</el-checkbox>
+                        <el-checkbox v-model="row.defaultExternal">在其他金融机构违约（包括不限于：人行征信记录中显示贷款分类状态不良类情况， 逾期超过 90 天等），或外部评级显示为违约级别</el-checkbox>
                     </el-form-item>
                 </el-col>
+                </div>
                 <el-col :span="7">
                     <el-form-item  label="严重程度：" prop="defaultSeverity">
-                        <el-select v-model="ruleForm.defaultSeverity" placeholder="严重程度">
+                        <el-select v-model="row.defaultSeverity" placeholder="严重程度">
                             <el-option
                                 v-for="item in severityOptions"
                                 :key="item.value"
@@ -110,7 +65,7 @@
                     <el-form-item label="备注">
                         <el-input
                             type="textarea"
-                            v-model="ruleForm.defaultRemark"
+                            v-model="row.defaultRemark"
                             maxlength="300"
                             show-word-limit
                             resize="none"
@@ -122,17 +77,21 @@
                 </el-col>
             </el-row>
         </el-form>
-        <div class="submit-button">
-          <el-button type="primary" @click="confirm" size="medium">提&nbsp;交</el-button>
-        </div>
-    </div>
+        <template v-slot:footer>
+            <div class="dialog-footer submit-button">
+                <el-button @click="dialogFormVisible=false">返&nbsp;回</el-button>
+                <el-button type="primary" @click="onSubmit">提&nbsp;交</el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 
-<script>
+<script scoped>
 export default {
     name:'fillDetail',
     data(){
         return{
+            dialogFormVisible: false,
             ruleForm:{
                 clientId:'',
                 clientName:'',
@@ -142,7 +101,7 @@ export default {
                 clientEmail:'',
                 clientCreated:'',
                 clientRete:'',
-                defaultNotch: false,
+                defaultNotch:false,
                 defaultCancel:false,
                 defaultDelay:false,
                 defaultRelate:false,
@@ -154,15 +113,15 @@ export default {
             },
             severityOptions:[
               {
-                value: 0,
+                value: '0',
                 label: '低'
               },
               {
-                value: 1,
+                value: '1',
                 label: '中'
               },
               {
-                value: 2,
+                value: '2',
                 label: '高'
               },
             ],
@@ -170,56 +129,55 @@ export default {
         }
     },
     methods:{
+        close() {
+            this.$emit('refresh');
+        },
+        setProp (p) {
+            this.dialogFormVisible = p.dialogFormVisible
+            this.row = p.row
+        },
         goback(){
             //this.$router.push('/application/default');
             console.log('back')
         },
-        confirm(){
-            if(this.defaultNotch || this.defaultBankrupt || this.defaultCancel || this.defaultDelay || this.defaultExternal || this.defaultRelate || this.defaultSubstitute){
-
+        onSubmit() {
+            if(this.row.defaultNotch || this.row.defaultBankrupt || this.row.defaultCancel || this.row.defaultDelay || this.row.defaultExternal || this.row.defaultRelate || this.row.defaultSubstitute){
+                console.log('yes')
             }else{
                 this.$message.error('至少选择一条违约原因！');
             }
-        },
-        onSubmit() {
-        //避免重复提交
-          if (this.ifSubmit == false) {
-            return;
-          }
-          this.ifSubmit = false;
-          this.loading = true;
-          this.$api.post('/default/addDefault',{
-            params:{
-              
-            }
-          }).then(res => {
-              if (res.code == "200") {
-                this.ifSubmit = true;
-                this.loading = false;
-                // this.$message({
-                //   message: "提交成功！",
-                //   type: "success"
-                // });
-                this.resetForm("form");
-                this.$confirm("提交申请成功", "提示", {
-                  confirmButtonText: "查询违约信息",
-                  cancelButtonText: "返回",
-                  type: "success"
-                })
-                  .then(() => {
-
-                  })
-                  .catch(() => {
-                    this.$router.push({
-                      path: "/dataSearch"
-                    });
-                  });
-              }
+            this.loading = true;
+            this.$api.post('default/addDefault',{
+                clientId:this.row.clientId,
+                clientName:this.row.clientName,
+                sponsorId:'SP000001',
+                sponsorName:'吴大洁',
+                defaultState:'0',
+                defaultRemark:this.row.defaultRemark || '',
+                defaultSeverity: this.row.defaultSeverity,
+                defaultNotch:this.row.defaultNotch==true?'1':'0',
+                defaultCancel:this.row.defaultCancel==true?'1':'0',
+                defaultDelay:this.row.defaultDelay==true?'1':'0',
+                defaultRelate:this.row.defaultRelate==true?'1':'0',
+                defaultSubstitute:this.row.defaultSubstitute==true?'1':'0',
+                defaultBankrupt:this.row.defaultBankrupt==true?'1':'0',
+                defaultExternal:this.row.defaultExternal==true?'1':'0'
+            }).then(res => {
+                if (res.data.code == "200") {
+                    console.log('申请')
+                    console.log(this.row);
+                    this.loading = false;
+                    this.dialogFormVisible = false;
+                    
+                    this.$message({
+                        message:'提交成功！',
+                        type:'success'
+                    })
+                }
             })
             .catch(res => {
-              this.ifSubmit = true;
-              this.loading = false;
-              this.$message.error("提交失败！");
+                this.loading = false;
+                this.$message.error("提交失败！");
             });
         }
     }
@@ -270,4 +228,12 @@ export default {
                 font-weight 600
                 display inline-block
                 margin-right 15px
+
+    .container >>>.el-checkbox__label {
+        display: inline-grid;
+        white-space: pre-line;
+        word-wrap: break-word;
+        overflow: hidden;
+        line-height: 20px;
+    }
 </style>

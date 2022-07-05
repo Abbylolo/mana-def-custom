@@ -49,11 +49,21 @@ export default {
     },
     methods:{
         getSponsorData(){
-            this.$api.get('/sponsor/queryAll',{
-                }).then( res =>{
-                    this.tableData=res.data.data;
-                    console.log(this.tableData)
-                })
+            this.$api.get('/sponsor/querySponsor',{
+              params:{
+                sponsorId:'SP000001',
+                sponsorName:'',
+                sponsorSex:'',
+                sponsorIdCard:'',
+                sponsorTel:'',
+                sponsorEmail:'',
+                startTime:'',
+                endTime:''
+              }
+            }).then( res =>{
+              this.tableData=res.data.data;
+              console.log(res.data.data)
+            })
         }
     }
 }

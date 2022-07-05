@@ -47,11 +47,21 @@ export default {
     },
     methods:{
         getReviewerData(){
-            this.$api.get('/reviewer/queryAll',{
-                }).then( res =>{
-                    this.tableData=res.data.data;
-                    console.log(this.tableData)
-                })
+            this.$api.get('/reviewer/queryReviewer',{
+              params:{
+                reviewerId:'RV000001',
+                reviewerName:'',
+                reviewerSex:'',
+                reviewerIdCard:'',
+                reviewerTel:'',
+                reviewerEmail:'',
+                startTime:'',
+                endTime:''
+              }
+            }).then( res =>{
+              this.tableData=res.data.data;
+              console.log(this.tableData)
+           })
         }
     }
 }

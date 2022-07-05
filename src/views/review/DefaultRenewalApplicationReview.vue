@@ -15,7 +15,7 @@
             </el-col>
             <el-col :span="7">
               <el-form-item>
-                <el-select v-model="form.rebirthState" placeholder="审核状态">
+                <el-select v-model="form.rebirthState" placeholder="审核状态" clearable>
                   <el-option v-for="(item, index) in reviewOptions" :key="index" :label="item" :value="index">
                   </el-option>
                 </el-select>
@@ -42,15 +42,15 @@
           <el-table-column prop="rebirthCreated" label="重生申请时间" width="160" :show-overflow-tooltip="true" />
           <el-table-column prop="defaultSeverity" label="严重程度" width="100" :show-overflow-tooltip="true" />
           <el-table-column prop="clientRete" label="最新外部等级信息" width="150" :show-overflow-tooltip="true" />
-          <el-table-column label="操作" width="100" fixed="right">
+          <el-table-column label="操作" width="150" fixed="right">
             <template v-slot="scope">
-              <el-button type="text" size="mini" @click="checkDetail(scope.row)">编辑</el-button>
+              <el-button type="text" size="mini" @click="checkDetail(scope.row)">审核</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="pagination_zone" v-if="tableData.length > 0">
           <el-pagination background :current-page="form.pageNum" :page-sizes="pageSizes" :page-size="form.pageSize"
-            layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+            layout="total, prev, pager, next" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
         </div>
         <div v-else>
@@ -123,6 +123,7 @@ export default {
     },
     // 查询
     searchTableData () {
+      this.loading = true
       this.$api.get('rebirth/queryRebirth', {
         params: {
           rebirthId: '',
@@ -143,6 +144,7 @@ export default {
         console.log(res)
         if (res.data.code === 200) {
           this.tableData = res.data.data
+          this.total = this.tableData.length
           let i = 0
           res.data.data.forEach(item => {
             if (item.rebirthState !== undefined) {
@@ -217,6 +219,7 @@ export default {
           })
         }
       })
+      this.loading = false
     },
     // 重置
     resetForm () {

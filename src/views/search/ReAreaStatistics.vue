@@ -11,9 +11,9 @@ export default {
     return {
       rawChartData: [],
       myChart: {},
-      xData: ['2000', '2010', '2020'], // 横坐标-年份
-      yData: [23, 13, 56], // 区域一数据
-      taskData: [34, 24, 79], // 区域二数据
+      xData: ['2000', '2005', '2010', '2015', '2020'], // 横坐标-年份
+      yData: [77, 13, 56, 99, 44], // 区域一数据
+      taskData: [34, 24, 79, 66, 48], // 区域二数据
       myChartStyle: { width: '100%', height: '400px' }, // 图表样式
       legend: [] // 图例
     }

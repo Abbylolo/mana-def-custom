@@ -228,6 +228,7 @@ export default {
       this.form = {
         clientName: '',
         defaultState: '',
+        rebirthState: '',
         pageNum: 1,
         pageSize: 10
       }

@@ -216,11 +216,11 @@ import fillDetail from './components/fillDetail'
           sexOptions:[
             {
               label:'男',
-              value:0
+              value:'男'
             },
             {
               label:'女',
-              value:1
+              value:'女'
             },
           ],
           rateOptions:[

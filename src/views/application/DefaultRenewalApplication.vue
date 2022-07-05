@@ -213,7 +213,7 @@
           width="140"
           :show-overflow-tooltip="true"
         />
-        <el-table-column prop="clientRete" label="最新外部等级" width="100" :show-overflow-tooltip="true"/>
+        <el-table-column prop="clientRete" label="最新外部等级" width="100" :show-overflow-tooltip="true" v-if="false"/>
         <el-table-column
           prop="defaultCreated"
           label="认定申请时间"
@@ -416,7 +416,7 @@ import fillRenewalDetail from './components/fillRenewalDetail'
               defaultState:'',
               sponsorId:'',
               sponsorName:'',
-              defaultRete:'',
+              clientRete: '',
               defaultCreated:'',
               defaultReviewed:'',
               defaultSeverity:'',

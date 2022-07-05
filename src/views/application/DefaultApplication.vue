@@ -320,6 +320,9 @@ import fillDetail from './components/fillDetail'
           }
         };
       },
+      created(){
+        this.searchTableData();
+      },
       methods:{
         searchTableData(){
           this.loading = true;

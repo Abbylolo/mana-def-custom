@@ -142,11 +142,7 @@ export default {
         },
         onSubmit() {
             if(this.row.defaultNotch || this.row.defaultBankrupt || this.row.defaultCancel || this.row.defaultDelay || this.row.defaultExternal || this.row.defaultRelate || this.row.defaultSubstitute){
-                console.log('yes')
-            }else{
-                this.$message.error('至少选择一条违约原因！');
-            }
-            this.loading = true;
+                this.loading = true;
             this.$api.post('default/addDefault',{
                 clientId:this.row.clientId,
                 clientName:this.row.clientName,
@@ -179,6 +175,10 @@ export default {
                 this.loading = false;
                 this.$message.error("提交失败！");
             });
+            }else{
+                this.$message.error('至少选择一条违约原因！');
+            }
+            
         }
     }
 }

@@ -143,40 +143,40 @@ export default {
             console.log('back')
         },
         onSubmit() {
-            if(this.row.defaultNotch || this.row.defaultBankrupt || this.row.defaultCancel || this.row.defaultDelay || this.row.defaultExternal || this.row.defaultRelate || this.row.defaultSubstitute){
-                console.log('yes')
-            }else{
-                this.$message.error('至少选择一条违约原因！');
-            }
-            this.loading = true;
-            this.$api.post('rebirth/addRebirth',{
-                rebirthId:this.row.rebirthId,
-                defaultId:this.row.defaultId,
-                rebirthState:'0',
-                rebirthRemark:this.row.rebirthRemark || '',
-                rebirthRelieve:this.row.rebirthRelieve==true?'1':'',
-                rebirthSettle:this.row.rebirthSettle==true?'1':'',
-                rebirthChange:this.row.rebirthChange==true?'1':'',
-                rebirthReduce:this.row.rebirthReduce==true?'1':'',
-                rebirthPay:this.row.rebirthPay==true?'1':'',
-                rebirthRepay:this.row.rebirthRepay==true?'1':''
-            }).then(res => {
-                if (res.data.code == "200") {
-                    console.log('申请')
-                    console.log(this.row);
+            if(this.row.rebirthRelieve || this.row.rebirthSettle || this.row.rebirthChange || this.row.rebirthReduce || this.row.rebirthPay || this.row.rebirthRepay){
+                this.loading = true;
+                this.$api.post('rebirth/addRebirth',{
+                    rebirthId:this.row.rebirthId,
+                    defaultId:this.row.defaultId,
+                    rebirthState:'0',
+                    rebirthRemark:this.row.rebirthRemark || '',
+                    rebirthRelieve:this.row.rebirthRelieve==true?'1':'',
+                    rebirthSettle:this.row.rebirthSettle==true?'1':'',
+                    rebirthChange:this.row.rebirthChange==true?'1':'',
+                    rebirthReduce:this.row.rebirthReduce==true?'1':'',
+                    rebirthPay:this.row.rebirthPay==true?'1':'',
+                    rebirthRepay:this.row.rebirthRepay==true?'1':''
+                }).then(res => {
+                    if (res.data.code == "200") {
+                        console.log('申请')
+                        console.log(this.row);
+                        this.loading = false;
+                        this.dialogFormVisible = false;
+                        this.$router.push('/application/defaultRenewal')
+                        this.$message({
+                            message:'提交成功！',
+                            type:'success'
+                        })
+                    }
+                })
+                .catch(res => {
                     this.loading = false;
-                    this.dialogFormVisible = false;
-                    this.$router.push('/application/defaultRenewal')
-                    this.$message({
-                        message:'提交成功！',
-                        type:'success'
-                    })
-                }
-            })
-            .catch(res => {
-                this.loading = false;
-                this.$message.error("提交失败！");
-            });
+                    this.$message.error("提交失败！");
+                });
+            }else{
+                this.$message.error('至少选择一条重生原因！');
+            }
+            
         }
     }
 }
